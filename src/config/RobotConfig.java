@@ -2,14 +2,14 @@ package config;
 
 public class RobotConfig {
     // Robot
-    public static boolean UseRobotReal = false;
+    public static boolean UseRobotReal = true;
     public static boolean UseRobotEv3 = false;
-    public static boolean UseRobotMockup = true;
+    public static boolean UseRobotMockup = false;
     // Robot - Ev3
     public static String IpAddressRobot = "10.0.1.1";
 
     // Compass
-    public static boolean Calibrate_Compass = false;
+    public static boolean Calibrate_Compass = true;
     public static int Compass_Sleep_MS = 100;
 
     // General

@@ -5,6 +5,7 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
+import util.ConsoleHelper;
 
 import static com.pi4j.io.gpio.PinState.LOW;
 import static com.pi4j.io.gpio.PinState.HIGH;
@@ -16,6 +17,7 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
     private Thread thread = null;
     private GpioPinDigitalOutput[] motorPins;
     private SteppingMethod steppingMethod;
+    private boolean invertDirection = false;
 
     public enum SteppingMethod {
         WAVE_DRIVE, FULL_STEP, HALF_STEP
@@ -65,10 +67,12 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
 
     //endregion
 
-    public StepperMotor28BYJ48(Pin pinA, Pin pinB, Pin pinC, Pin pinD, SteppingMethod steppingMethod, MotorType motorType)
+    public StepperMotor28BYJ48(Pin pinA, Pin pinB, Pin pinC, Pin pinD, SteppingMethod steppingMethod, MotorType motorType, boolean invertDirection)
     {
         super(3, 100, motorType);
         super.setSpeed(1); // set to min speed
+
+        this.invertDirection = invertDirection;
 
         GpioController gpio = GpioFactory.getInstance();
 
@@ -115,12 +119,12 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
 
     public void step(int noOfSteps) throws InterruptedException {
         for (int currentStep = 0; currentStep < Math.abs(noOfSteps); currentStep++) {
-            this.oneStep(noOfSteps > 0);
+            this.oneStep();
         }
     }
 
-    public void oneStep(boolean forward) throws InterruptedException {
-        if (forward) {
+    public void oneStep() throws InterruptedException {
+        if (this.direction == Direction.FORWARD) {
             this.lastSequenceIndex++;
             if (this.lastSequenceIndex > 7) {
                 this.lastSequenceIndex = 0;
@@ -139,7 +143,7 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
             if(Thread.interrupted()) {
                 throw new InterruptedException();
             } else {
-                this.oneStep(this.direction == Direction.FORWARD);
+                this.oneStep();
             }
         }
     }
@@ -184,7 +188,8 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
     public void forward() {
         super.forward();
 
-        this.direction = Direction.FORWARD;
+        this.setDirection(Direction.FORWARD);
+
         this.startThread();
     }
 
@@ -192,7 +197,8 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
     public void backward() {
         super.backward();
 
-        this.direction = Direction.BACKWARD;
+        this.setDirection(Direction.BACKWARD);
+
         this.startThread();
     }
 
@@ -207,5 +213,16 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
     public boolean isRotating() {
         super.isRotating = this.thread != null && this.thread.isAlive();
         return super.isRotating();
+    }
+
+    private void setDirection(Direction direction) {
+        this.direction = direction;
+        if(this.invertDirection) {
+            if(this.direction == Direction.FORWARD) {
+                this.direction = Direction.BACKWARD;
+            } else {
+                this.direction = Direction.FORWARD;
+            }
+        }
     }
 }
