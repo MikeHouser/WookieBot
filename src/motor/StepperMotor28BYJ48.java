@@ -5,11 +5,14 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
-import util.ConsoleHelper;
 
 import static com.pi4j.io.gpio.PinState.LOW;
 import static com.pi4j.io.gpio.PinState.HIGH;
 
+/**
+ * Stepper Motor 28BYJ-48 with ULN2003 Board
+ * Introduction video: https://www.youtube.com/watch?v=B86nqDRskVU
+ */
 public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
 
     private int lastSequenceIndex = 0;

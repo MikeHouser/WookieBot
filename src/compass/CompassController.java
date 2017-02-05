@@ -50,7 +50,7 @@ public class CompassController implements ICompassController, ISensorController,
 
 	@Override
 	public void startCalibrating() {
-		if (this.calibrationRunner.isRunning()) {
+		if (!this.calibrationRunner.isRunning()) {
 			this.tCalibration = new Thread(this.calibrationRunner);
 			this.tCalibration.start();
 		}  else {
@@ -60,14 +60,16 @@ public class CompassController implements ICompassController, ISensorController,
 
 	@Override
 	public void stopCalibrating() {
+	    if(!this.calibrationRunner.isRunning()) return;
+
 		this.calibrationRunner.requestStop();
 
 		System.out.println("Wait for 'CalibrationRunner' shutdown to complete");
+
 		try {
 			this.tCalibration.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		} catch (InterruptedException e) { }
+
         System.out.println("Shutdown for 'CalibrationRunner' has completed.");
 
 		this.offsetX = this.angleRunner.offsetX = this.calibrationRunner.offsetX;

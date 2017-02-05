@@ -1,10 +1,27 @@
 package config;
 
+import java.util.ResourceBundle;
+
 public class RobotConfig {
-    // Robot
-    public static boolean UseRobotReal = true;
-    public static boolean UseRobotEv3 = false;
-    public static boolean UseRobotMockup = false;
+
+    private static ResourceBundle rb = ResourceBundle.getBundle("robotconfig");
+
+    private static boolean getBoolean(String key) {
+       return Boolean.parseBoolean(rb.getString(key));
+    }
+
+    public static boolean getUseLegoRobot() {
+        return getBoolean("UseLegoRobot");
+    }
+
+    public static boolean getUseMakerRobot() {
+        return getBoolean("UseMakerRobot");
+    }
+
+    public static boolean getUseMockupRobot() {
+        return getBoolean("UseMockupRobot");
+    }
+
     // Robot - Ev3
     public static String IpAddressRobot = "10.0.1.1";
 
