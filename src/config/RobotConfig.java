@@ -6,10 +6,28 @@ public class RobotConfig {
 
     private static ResourceBundle rb = ResourceBundle.getBundle("robotconfig");
 
+    //region Helper methods
+
     private static boolean getBoolean(String key) {
-       return Boolean.parseBoolean(rb.getString(key));
+        return Boolean.parseBoolean(rb.getString(key));
     }
 
+    private static int getInt(String key) {
+        return Integer.parseInt(rb.getString(key));
+    }
+
+    private static Character getCharacter(String key) {
+        String temp = rb.getString(key);
+        if(temp.length()>0) {
+            return temp.charAt(0);
+        } else {
+            return ' ';
+        }
+    }
+
+    //endregion
+
+    // Robot Type
     public static boolean getUseLegoRobot() {
         return getBoolean("UseLegoRobot");
     }
@@ -23,32 +41,64 @@ public class RobotConfig {
     }
 
     // Robot - Ev3
-    public static String IpAddressRobot = "10.0.1.1";
+    public static String getIpAddressEv3() {
+        return  rb.getString("IpAddressEv3");
+    }
 
     // Compass
-    public static boolean Calibrate_Compass = true;
-    public static int Compass_Sleep_MS = 100;
+    public static boolean getCalibrateCompass() {
+        return getBoolean("CalibrateCompass");
+    }
+    public static int getCompassSleepMs() {
+        return getInt("CompassSleepMs");
+    }
 
     // General
-    public static int FindLine_InitalMove_MS = 250;
-    public static int CalibrationDriveDuration_MS = 25000;
-    public static int CalibrationDrivePause_MS = 1000;
-    public static boolean Write_to_Console = true;
+    public static int getFindLineInitialMoveMs() {
+        return getInt("FindLineInitialMoveMs");
+    }
+    public static int getCalibrationDriveDurationMs() {
+        return getInt("CalibrationDriveDurationMs");
+    }
+    public static int getCalibrationDrivePauseMs() {
+        return getInt("CalibrationDrivePauseMs");
+    }
+    public static boolean getWriteToConsole() {
+        return getBoolean("WriteToConsole");
+    }
 
-    // DcMotor
-    public static int DefaultMotorSpeed = 1; // % minimum
-    public static int SearchMotorSpeed = 1; // % minimum
-    public static int TurnMotorSpeed = 1; // % minimum
-    // DcMotor - EV3
-    public static Character MotorType = 'L';
-    public static String LeftMotorPort = "C";
-    public static String RightMotorPort = "B";
-    public static boolean BRAKE_ON_STOP = true;
+    // Motor
+    public static int getDefaultMotorSpeedInPercent() {
+        return getInt("DefaultMotorSpeedInPercent");
+    }
+    public static int getSearchMotorSpeedInPercent() {
+        return getInt("SearchMotorSpeedInPercent");
+    }
+    public static int getTurnMotorSpeedInPercent() {
+        return getInt("TurnMotorSpeedInPercent");
+    }
+    // Motor - EV3
+    public static Character getEv3MotorType() {
+        return getCharacter("Ev3MotorType");
+    }
+    public static String getEv3LeftMotorPort() {
+        return rb.getString("Ev3LeftMotorPort");
+    }
+    public static String getEv3RightMotorPort() {
+        return rb.getString("Ev3RightMotorPort");
+    }
+    public static boolean getMotorBrakeOnStop() {
+        return getBoolean("MotorBrakeOnStop");
+    }
 
     // Color sensor
     // Color sensor - EV3
-    public static String ColorSensorPort = "S1";
+    public static String getEv3ColorSensorPort() {
+        return rb.getString("Ev3ColorSensorPort");
+    }
 
     // Distance sensor
-    public static int Distance_Sleep_MS = 100;
+    public static int getDistanceSensorSleepMs() {
+        return getInt("DistanceSensorSleepMs");
+    }
 }

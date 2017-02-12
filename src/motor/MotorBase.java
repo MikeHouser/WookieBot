@@ -26,14 +26,22 @@ public class MotorBase implements IMotor {
         } else if (speedInPercent == 1) {
             // 1 = Min Speed
             this.currentSpeed = this.minSpeedAbs;
+        } else if (speedInPercent == 100) {
+            // 100 = Max Speed
+            this.currentSpeed = this.maxSpeedAbs;
         } else {
             // 2..100 Calculate Speed
-            int diff = this.maxSpeedAbs - this.minSpeedAbs;
+            int diff = Math.abs(this.maxSpeedAbs - this.minSpeedAbs);
             float onePercent = diff / 100;
             float temp = (onePercent * speedInPercent) + this.minSpeedAbs;
             this.currentSpeed = Math.round(temp);
         }
         ConsoleHelper.printlnDefault("Motor (" + this.motorType.name() + "): Speed is set to " + this.currentSpeed);
+    }
+
+    @Override
+    public int getSpeed() {
+        return this.currentSpeed;
     }
 
     @Override

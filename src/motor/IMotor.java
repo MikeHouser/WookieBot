@@ -2,6 +2,7 @@ package motor;
 
 public interface IMotor {
     void setSpeed(int speedInPercent);
+    int getSpeed();
     void forward();
     void backward();
     void stop();

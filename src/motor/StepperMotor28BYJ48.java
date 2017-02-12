@@ -72,8 +72,7 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
 
     public StepperMotor28BYJ48(Pin pinA, Pin pinB, Pin pinC, Pin pinD, SteppingMethod steppingMethod, MotorType motorType, boolean invertDirection)
     {
-        super(3, 100, motorType);
-        super.setSpeed(1); // set to min speed
+        super(100, 3, motorType);
 
         this.invertDirection = invertDirection;
 

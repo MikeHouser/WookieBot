@@ -26,13 +26,13 @@ public class ConsoleHelper {
     }
 
     public static void printlnDefault(String message) {
-        if (RobotConfig.Write_to_Console) {
+        if (RobotConfig.getWriteToConsole()) {
             System.out.println(message);
         }
     }
 
     private static void println(String message, String color) {
-        if (RobotConfig.Write_to_Console) {
+        if (RobotConfig.getWriteToConsole()) {
             System.out.println(color + message + ANSI_RESET);
         }
     }

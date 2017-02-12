@@ -32,7 +32,7 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
 
     public void initRobot() {
 	    this.motorController.init();
-	    this.motorController.setSpeed(RobotConfig.DefaultMotorSpeed);
+	    this.motorController.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
 
 	    this.distanceController.init();
 
@@ -98,7 +98,7 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
         this.motorController.startTurnLeft();
 
         try {
-            Thread.sleep(RobotConfig.CalibrationDriveDuration_MS);
+            Thread.sleep(RobotConfig.getCalibrationDriveDurationMs());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -106,7 +106,7 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
         this.motorController.stop();
 
         try {
-            Thread.sleep(RobotConfig.CalibrationDrivePause_MS);
+            Thread.sleep(RobotConfig.getCalibrationDrivePauseMs());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -114,7 +114,7 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
         this.motorController.startTurnRight();
 
         try {
-            Thread.sleep(RobotConfig.CalibrationDriveDuration_MS);
+            Thread.sleep(RobotConfig.getCalibrationDriveDurationMs());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

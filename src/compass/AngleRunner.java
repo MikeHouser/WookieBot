@@ -54,7 +54,7 @@ public class AngleRunner implements Runnable, IAngleObservable {
 				float roundedAngle = compassResultInfo.getAngleRounded();
 				this.setAngle(roundedAngle);
 
-	    		Thread.sleep(RobotConfig.Compass_Sleep_MS);
+	    		Thread.sleep(RobotConfig.getCompassSleepMs());
 	    	}
 			this.isRunning = false;
 	    	this.stopRequested = false;

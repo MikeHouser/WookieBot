@@ -35,7 +35,7 @@ public class TurnRightState extends RobotState {
         }
 
         this.turnRightToTargetAngle = true;
-        context.getRobot().setSpeed(RobotConfig.TurnMotorSpeed);
+        context.getRobot().setSpeed(RobotConfig.getTurnMotorSpeedInPercent());
         context.getRobot().startTurnRight();
     }
 
@@ -71,7 +71,7 @@ public class TurnRightState extends RobotState {
                     this.turnRightToTargetAngle = false;
                     IRobot robot = context.getRobot();
                     robot.stopTurnRight();
-                    robot.setSpeed(RobotConfig.DefaultMotorSpeed);
+                    robot.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
                 }
 
                 break;

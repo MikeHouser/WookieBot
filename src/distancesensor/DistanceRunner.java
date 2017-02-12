@@ -37,7 +37,7 @@ public class DistanceRunner implements Runnable, IDistanceObservable {
                     this.setDistance(distance);
                 }
 
-                Thread.sleep(RobotConfig.Distance_Sleep_MS);
+                Thread.sleep(RobotConfig.getDistanceSensorSleepMs());
             }
             this.isRunning = false;
             this.stopRequested = false;

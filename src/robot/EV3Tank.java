@@ -30,7 +30,7 @@ public class EV3Tank extends RobotBase {
 		System.out.println("Started init of RobotCommander.");
 
 		try {
-			this.ev3 = new RemoteEV3(RobotConfig.IpAddressRobot);
+			this.ev3 = new RemoteEV3(RobotConfig.getIpAddressEv3());
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
@@ -43,13 +43,13 @@ public class EV3Tank extends RobotBase {
 
 		super.compassController = new CompassController(new MockupCompassProxy());
 
-		IMotor leftMotor = new EV3Motor(this.ev3, RobotConfig.MotorType, RobotConfig.LeftMotorPort, RobotConfig.BRAKE_ON_STOP, MotorType.LEFT);
-		IMotor rightMotor = new EV3Motor(this.ev3, RobotConfig.MotorType, RobotConfig.RightMotorPort, RobotConfig.BRAKE_ON_STOP, MotorType.RIGHT);
+		IMotor leftMotor = new EV3Motor(this.ev3, RobotConfig.getEv3MotorType(), RobotConfig.getEv3LeftMotorPort(), RobotConfig.getMotorBrakeOnStop(), MotorType.LEFT);
+		IMotor rightMotor = new EV3Motor(this.ev3, RobotConfig.getEv3MotorType(), RobotConfig.getEv3RightMotorPort(), RobotConfig.getMotorBrakeOnStop(), MotorType.RIGHT);
 		super.motorController = new MotorController(leftMotor, rightMotor);
 
 		super.distanceController = new DistanceController(new MockupDistanceSensor());
 
-		Port sensorPort1 = this.ev3.getPort(RobotConfig.ColorSensorPort);
+		Port sensorPort1 = this.ev3.getPort(RobotConfig.getEv3ColorSensorPort());
 		IColorSensor colorSensor = new MyEV3ColorSensor(sensorPort1);
 		super.colorController = new ColorController(colorSensor);
 

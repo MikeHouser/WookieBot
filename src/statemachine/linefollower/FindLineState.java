@@ -82,7 +82,7 @@ public class FindLineState extends RobotState {
         this.timer.schedule(action, this.timeoutMs);
 
         // Start action
-        robot.setSpeed(RobotConfig.SearchMotorSpeed);
+        robot.setSpeed(RobotConfig.getSearchMotorSpeedInPercent());
         if (this.turnLeft) robot.startTurnLeft();
         else robot.startTurnRight();
     }
@@ -123,7 +123,7 @@ public class FindLineState extends RobotState {
 
         if (this.turnLeft) robot.stopTurnLeft();
         else robot.stopTurnRight();
-        robot.setSpeed(RobotConfig.DefaultMotorSpeed);
+        robot.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
 
         robot.Beep();
 

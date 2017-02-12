@@ -22,7 +22,7 @@ public class OnlineState extends RobotState {
     public void initState(RobotStateContext context) {
         super.initState(context);
 
-        if (RobotConfig.Calibrate_Compass && !context.isCalibrationDone()) {
+        if (RobotConfig.getCalibrateCompass() && !context.isCalibrationDone()) {
             context.setState(new CalibrationState());
         }
     }
