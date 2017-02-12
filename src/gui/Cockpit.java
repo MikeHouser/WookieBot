@@ -29,6 +29,7 @@ public class Cockpit extends JFrame implements IStatemachineObserver {
     private JButton btnStopListenColor;
     private JButton btnStartListenCompass;
     private JButton btnStopListenCompass;
+    private JLabel lblDistance;
     private Wookiebot wookiebot;
     private RobotStateContext robotStateContext;
 
@@ -96,6 +97,8 @@ public class Cockpit extends JFrame implements IStatemachineObserver {
             this.lblState.setText(args.stateName);
         } else if (args.colorNameChanged) {
             this.lblColor.setText(args.colorName);
+        } else if (args.distanceChanged) {
+            this.lblDistance.setText(args.distance + " cm");
         }
     }
 

@@ -90,6 +90,9 @@ public class RobotConfig {
     public static boolean getMotorBrakeOnStop() {
         return getBoolean("MotorBrakeOnStop");
     }
+    // Motor - Stepper
+    public static int getStepperMinSpeedAbs() { return getInt("StepperMinSpeedAbs"); }
+    public static int getStepperMaxSpeedAbs() { return getInt("StepperMaxSpeedAbs"); }
 
     // Color sensor
     // Color sensor - EV3

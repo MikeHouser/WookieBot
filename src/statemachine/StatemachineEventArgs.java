@@ -10,6 +10,9 @@ public class StatemachineEventArgs {
     public String colorName = "";
     public boolean colorNameChanged = false;
 
+    public float distance = 0;
+    public boolean distanceChanged = false;
+
     public StatemachineEventArgs() {
 
     }

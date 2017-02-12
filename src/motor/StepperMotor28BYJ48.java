@@ -5,6 +5,7 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
+import config.RobotConfig;
 
 import static com.pi4j.io.gpio.PinState.LOW;
 import static com.pi4j.io.gpio.PinState.HIGH;
@@ -72,7 +73,7 @@ public class StepperMotor28BYJ48 extends MotorBase implements Runnable {
 
     public StepperMotor28BYJ48(Pin pinA, Pin pinB, Pin pinC, Pin pinD, SteppingMethod steppingMethod, MotorType motorType, boolean invertDirection)
     {
-        super(100, 3, motorType);
+        super(RobotConfig.getStepperMinSpeedAbs(), RobotConfig.getStepperMaxSpeedAbs(), motorType);
 
         this.invertDirection = invertDirection;
 

@@ -54,19 +54,30 @@ public class RobotStateContext implements IRobotObserver, IStatemachineObservabl
     public void handleRobotMessage(RobotMessage message, String data) {
         this.currentState.handleRobotMessage(this, message, data);
 
+        StatemachineEventArgs args = new StatemachineEventArgs();
         switch (message) {
             case AngleChanged: {
-                StatemachineEventArgs args = new StatemachineEventArgs();
                 args.angle = Float.parseFloat(data);
                 args.angleChanged = true;
-                this.notifyObservers(args);
+                break;
             }
             case ColorChanged: {
-                StatemachineEventArgs args = new StatemachineEventArgs();
                 args.colorName = data;
                 args.colorNameChanged = true;
-                this.notifyObservers(args);
+                break;
             }
+            case DistanceChanged: {
+                args.distance = Float.parseFloat(data);
+                args.distanceChanged = true;
+                break;
+            }
+            default: {
+                args = null;
+            }
+        }
+
+        if (args != null) {
+            this.notifyObservers(args);
         }
     }
 

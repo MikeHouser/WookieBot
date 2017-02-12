@@ -53,7 +53,7 @@ public class DistanceRunner implements Runnable, IDistanceObservable {
     private void setDistance(float distance) {
         if(this.distance != distance) {
             this.distance = distance;
-            ConsoleHelper.printlnDefault("DistanceRunner: Distance changed -> " + distance);
+            //ConsoleHelper.printlnDefault("DistanceRunner: Distance changed -> " + distance);
             try {
                 for(IDistanceObserver observer: this.observers) {
                     observer.distanceChanged(distance);
