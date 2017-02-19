@@ -40,7 +40,7 @@ public class FollowLineState extends RobotState {
                 if (newColor != this.colorType) {
                     ConsoleHelper.printlnPurple(MessageFormat.format("Lost the color to follow {0} and found {1} instead.", this.colorType, newColor));
                     robot.stopDriveForward();
-                    context.setState(new FindLineState(RobotConfig.getFindLineInitialMoveMs(), this.colorType, true));
+                    context.setState(new FindLineStateTimeBased(RobotConfig.getFindLineInitialMoveMs(), this.colorType, true));
                 }
             }
         }

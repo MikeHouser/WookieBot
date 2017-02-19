@@ -11,7 +11,10 @@ import util.ConsoleHelper;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FindLineState extends RobotState {
+/**
+ * Time based algorithm that can be used when no angle detection is possible
+ */
+public class FindLineStateTimeBased extends RobotState {
 
     class TimeoutTask extends TimerTask {
         private RobotStateContext context;
@@ -35,7 +38,7 @@ public class FindLineState extends RobotState {
             if (this.Cancel) return;
             this.Activated = true;
 
-            ConsoleHelper.printlnPurple("Timout reached in 'FindLineState'.");
+            ConsoleHelper.printlnPurple("Timout reached in 'FindLineStateTimeBased'.");
 
             this.timeoutMs += this.timeoutMs;
 
@@ -43,7 +46,7 @@ public class FindLineState extends RobotState {
             else this.context.getRobot().stopTurnRight();
 
             // New state
-            this.context.setState(new FindLineState(this.timeoutMs, this.colorType, !this.turnLeft));
+            this.context.setState(new FindLineStateTimeBased(this.timeoutMs, this.colorType, !this.turnLeft));
         }
     }
 
@@ -53,7 +56,7 @@ public class FindLineState extends RobotState {
     private ColorType colorType;
     private boolean turnLeft = true;
 
-    public FindLineState(int timeoutMs, ColorType colorType, boolean turnLeft) {
+    public FindLineStateTimeBased(int timeoutMs, ColorType colorType, boolean turnLeft) {
         this.timeoutMs = timeoutMs;
         this.colorType = colorType;
         this.turnLeft = turnLeft;
@@ -78,7 +81,7 @@ public class FindLineState extends RobotState {
 
         // Prepare timeout
         this.action = new TimeoutTask(this.timeoutMs, context, this.colorType, this.turnLeft);
-        this.timer = new Timer("FindLineState-Timer", true);
+        this.timer = new Timer("FindLineStateTimeBased-Timer", true);
         this.timer.schedule(action, this.timeoutMs);
 
         // Start action

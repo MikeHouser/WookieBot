@@ -19,12 +19,12 @@ public class Tank extends RobotBase {
         IMotor leftMotor = new
                 StepperMotor28BYJ48(RaspiPin.GPIO_25, RaspiPin.GPIO_24,
                 RaspiPin.GPIO_23, RaspiPin.GPIO_22,
-                StepperMotor28BYJ48.SteppingMethod.FULL_STEP, MotorType.LEFT, true);
+                SteppingMethod.FULL_STEP, MotorType.LEFT, true);
 
         IMotor rightMotor = new
                 StepperMotor28BYJ48(RaspiPin.GPIO_29, RaspiPin.GPIO_28,
                 RaspiPin.GPIO_27, RaspiPin.GPIO_26,
-                StepperMotor28BYJ48.SteppingMethod.FULL_STEP, MotorType.RIGHT, false);
+                SteppingMethod.FULL_STEP, MotorType.RIGHT, false);
 
         super.motorController = new MotorController(leftMotor, rightMotor);
 

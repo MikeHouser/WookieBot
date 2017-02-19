@@ -5,6 +5,7 @@ import util.ConsoleHelper;
 public class MotorController implements IMotorController {
     private IMotor leftMotor;
     private IMotor rightMotor;
+    private boolean waitForStop = false;
 
     public MotorController(IMotor leftMotor, IMotor rightMotor) {
         this.leftMotor = leftMotor;
@@ -13,13 +14,20 @@ public class MotorController implements IMotorController {
 
     private void waitForMotorsToStop() {
         while(this.leftMotor.isRotating() || this.rightMotor.isRotating()) {
+
             try {
-                ConsoleHelper.printlnDefault("One motor is still rotating.");
+                if(!this.waitForStop) {
+                    // Print this message just one time
+                    ConsoleHelper.printlnDefault("One motor is still rotating.");
+                }
+                this.waitForStop = true;
+
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        this.waitForStop = false;
     }
 
     @Override
