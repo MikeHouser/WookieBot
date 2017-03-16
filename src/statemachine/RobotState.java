@@ -33,6 +33,10 @@ public class RobotState {
         context.setState(new OfflineState());
     }
 
+    public void transition(RobotStateContext context) {
+
+    }
+
     public void handleCommand(RobotStateContext context, UserCommandContainer command) {
         switch (command.userCommand) {
             case START_LISTEN_DISTANCE: {

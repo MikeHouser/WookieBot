@@ -2,7 +2,10 @@ package motor;
 
 import util.ConsoleHelper;
 
-public class MotorBase implements IMotor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MotorBase implements IMotor, IMotorObservable {
     protected int minSpeedAbs = 0;
     protected int maxSpeedAbs = 100;
 
@@ -11,6 +14,12 @@ public class MotorBase implements IMotor {
     protected  MotorType motorType = MotorType.UNDEFINED;
 
     protected boolean isRotating = false;
+
+    //region Observer Pattern
+    private boolean finishUnsubscribeCalled = false;
+    protected List<IMotorObserver> observers = new ArrayList<IMotorObserver>();
+    protected List<IMotorObserver> observersToRemove = new ArrayList<IMotorObserver>();
+    //endregion
 
     public MotorBase(int minSpeedAbs, int maxSpeedAbs, MotorType motorType) {
         this.maxSpeedAbs = maxSpeedAbs;
@@ -77,4 +86,39 @@ public class MotorBase implements IMotor {
     public boolean isRotating() {
         return this.isRotating;
     }
+
+    //region Implement IMotorObervable
+
+    @Override
+    public void subscribeToMotorMessages(IMotorObserver observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public void unsubscribeToMotorMessages(IMotorObserver observer) {
+        this.observersToRemove.add(observer);
+    }
+
+    @Override
+    public void notifyMotorObservers(MotorMessage message) {
+        try {
+            for (IMotorObserver observer : this.observers) observer.handleMotorMessage(message);
+        } catch (java.util.ConcurrentModificationException concurrentModificationException) {
+            System.out.println(concurrentModificationException);
+        }
+
+        if(this.finishUnsubscribeCalled) {
+            this.observers.removeAll(this.observersToRemove);
+            this.observersToRemove.clear();
+
+            this.finishUnsubscribeCalled = false;
+        }
+    }
+
+    @Override
+    public void finishUnsubscribeToMotorMessages() {
+        this.finishUnsubscribeCalled = true;
+    }
+
+    //endregion
 }

@@ -8,6 +8,7 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
     protected Direction direction = Direction.FORWARD;
     protected boolean invertDirection = false;
     protected Thread thread = null;
+    private int runArgsSteps = 0;
 
     public StepperMotorBase(int minSpeedAbs, int maxSpeedAbs, MotorType motorType, boolean invertDirection, SteppingMethod steppingMethod) {
         super(minSpeedAbs, maxSpeedAbs, motorType);
@@ -63,14 +64,20 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
     }
 
     @Override
-    public void startRotation() {
+    public void startRotationAsync(int noOfSteps) {
         try {
-            while (true) {
-                if (Thread.interrupted()) {
-                    ConsoleHelper.printlnDefault("StepperMotorBase: startRotation -> Interrupted");
-                    return;
-                } else {
-                    this.step();
+            if(noOfSteps > 0) {
+                // run a predefined number of steps async
+                this.steps(noOfSteps);
+            } else {
+                // run infinite async unitl interrupted
+                while (true) {
+                    if (Thread.interrupted()) {
+                        ConsoleHelper.printlnDefault("StepperMotorBase: startRotationAsync -> Interrupted");
+                        return;
+                    } else {
+                        this.step();
+                    }
                 }
             }
         } catch (InterruptedException e) {
@@ -102,13 +109,34 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
         this.steppingMethod = steppingMethod;
     }
 
+    @Override
+    public void forward(int noOfSteps) {
+        super.forward();
+
+        this.setDirection(Direction.FORWARD);
+        this.runArgsSteps = noOfSteps;
+
+        this.startThread();
+    }
+
+    @Override
+    public void backward(int noOfSteps) {
+        super.backward();
+
+        this.setDirection(Direction.BACKWARD);
+        this.runArgsSteps = noOfSteps;
+
+        this.startThread();
+    }
+
     //endregion
 
     //region Implement Runnable
 
     @Override
     public void run() {
-        this.startRotation();
+        this.startRotationAsync(this.runArgsSteps);
+        super.notifyMotorObservers(MotorMessage.AyncMotorStopped);
     }
 
     //endregion
@@ -120,6 +148,7 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
         super.forward();
 
         this.setDirection(Direction.FORWARD);
+        this.runArgsSteps = 0;
 
         this.startThread();
     }
@@ -129,6 +158,7 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
         super.backward();
 
         this.setDirection(Direction.BACKWARD);
+        this.runArgsSteps = 0;
 
         this.startThread();
     }

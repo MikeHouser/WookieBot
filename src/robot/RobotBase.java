@@ -164,6 +164,20 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
 	    this.notifyObsevers(RobotMessage.DriveForwardStopped);
 	}
 
+    //region Stepper Functionality
+
+    @Override
+    public void turnLeftWithSteps(int steps) {
+        // todo implement
+    }
+
+    @Override
+    public void turnRightWithSteps(int steps) {
+        // todo implement
+    }
+
+    //endregion
+
     public void printMessage(String prefix, String message) {
         System.out.println(prefix + message);
     }

@@ -29,4 +29,8 @@ public interface IRobot {
     void stopListeningColor();
     void startListeningCompass();
     void stopListeningCompass();
+
+    // Stepper Motor Functionality
+    void turnLeftWithSteps(int steps);
+    void turnRightWithSteps(int steps);
 }

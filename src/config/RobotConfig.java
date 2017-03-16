@@ -104,4 +104,12 @@ public class RobotConfig {
     public static int getDistanceSensorSleepMs() {
         return getInt("DistanceSensorSleepMs");
     }
+
+    // Find Line
+    public static boolean getFindLineTimeBased()  {
+        return getBoolean("FindLineTimeBased");
+    }
+    public static int getFindLineStepOffset() {
+        return getInt("FindLineStepOffset");
+    }
 }

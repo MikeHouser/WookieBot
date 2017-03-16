@@ -39,11 +39,26 @@ public class FollowLineState extends RobotState {
                 ColorType newColor = ColorType.valueOf(data);
                 if (newColor != this.colorType) {
                     ConsoleHelper.printlnPurple(MessageFormat.format("Lost the color to follow {0} and found {1} instead.", this.colorType, newColor));
+
+                    // Stop movement
                     robot.stopDriveForward();
-                    context.setState(new FindLineStateTimeBased(RobotConfig.getFindLineInitialMoveMs(), this.colorType, true));
+
+                    this.transition(context);
                 }
             }
         }
+    }
+
+    @Override
+    public void transition(RobotStateContext context) {
+        RobotState newState;
+       if(RobotConfig.getFindLineTimeBased()) {
+           newState = new FindLineStateTimeBased(RobotConfig.getFindLineInitialMoveMs(), this.colorType, true);
+       } else {
+           newState = new FindLineStateStepperBased(0, this.colorType, true);
+       }
+
+        context.setState(newState);
     }
 
     @Override

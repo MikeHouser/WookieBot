@@ -87,4 +87,30 @@ public class MotorController implements IMotorController {
         this.leftMotor.deInit();
         this.rightMotor.deInit();
     }
+
+    //region Stepper Functionality
+
+    @Override
+    public void turnLeftWithSteps(int steps) {
+        ConsoleHelper.printlnDefault(String.format("MotorController: turnLeftWithSteps(%1)", steps));
+        if(this.leftMotor instanceof IStepperMotor && this.rightMotor instanceof IStepperMotor) {
+            ((IStepperMotor) this.leftMotor).backward(steps);
+            ((IStepperMotor) this.rightMotor).forward(steps);
+        } else {
+            ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
+        }
+    }
+
+    @Override
+    public void turnRightWithSteps(int steps) {
+        ConsoleHelper.printlnDefault(String.format("MotorController: turnRightWithSteps(%1)", steps));
+        if(this.leftMotor instanceof IStepperMotor && this.rightMotor instanceof IStepperMotor) {
+            ((IStepperMotor) this.leftMotor).forward(steps);
+            ((IStepperMotor) this.rightMotor).backward(steps);
+        } else {
+            ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
+        }
+    }
+
+    //endregion
 }

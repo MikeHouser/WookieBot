@@ -14,7 +14,7 @@ import java.util.TimerTask;
 /**
  * Time based algorithm that can be used when no angle detection is possible
  */
-public class FindLineStateTimeBased extends RobotState {
+public class FindLineStateTimeBased extends FindLineState {
 
     class TimeoutTask extends TimerTask {
         private RobotStateContext context;
@@ -53,31 +53,22 @@ public class FindLineStateTimeBased extends RobotState {
     private Timer timer;
     private TimeoutTask action;
     private int timeoutMs;
-    private ColorType colorType;
-    private boolean turnLeft = true;
 
     public FindLineStateTimeBased(int timeoutMs, ColorType colorType, boolean turnLeft) {
+        super(colorType, turnLeft);
+
         this.timeoutMs = timeoutMs;
         this.colorType = colorType;
         this.turnLeft = turnLeft;
     }
 
     @Override
-    public String getName() {
-        return "Find line";
-    }
-
-    @Override
     public void initState(RobotStateContext context) {
         super.initState(context);
 
-        IRobot robot = context.getRobot();
+        if (super.stopInit) return;
 
-        // Check if transition can be done
-        if(robot.getColor() == this.colorType) {
-            this.Transition(context);
-            return;
-        }
+        IRobot robot = context.getRobot();
 
         // Prepare timeout
         this.action = new TimeoutTask(this.timeoutMs, context, this.colorType, this.turnLeft);
@@ -85,31 +76,21 @@ public class FindLineStateTimeBased extends RobotState {
         this.timer.schedule(action, this.timeoutMs);
 
         // Start action
-        robot.setSpeed(RobotConfig.getSearchMotorSpeedInPercent());
         if (this.turnLeft) robot.startTurnLeft();
         else robot.startTurnRight();
     }
 
     @Override
-    public void handleRobotMessage(RobotStateContext context, RobotMessage message, String data) {
-        super.handleRobotMessage(context, message, data);
+    public void colorFound(RobotStateContext context) {
+        // Semaphore
+        if (this.action.Activated) return;
+        this.action.Cancel = true;
 
-        switch (message) {
-            case ColorChanged: {
-                ColorType newColorType = ColorType.valueOf(data);
-                if(newColorType == this.colorType) {
-                    // Semaphore
-                    if (this.action.Activated) return;
-                    this.action.Cancel = true;
+        // Stop timer
+        this.timer.cancel();
+        this.timer.purge();
 
-                    // Stop timer
-                    this.timer.cancel();
-                    this.timer.purge();
-
-                    this.Transition(context);
-                }
-            }
-        }
+        super.colorFound(context);
     }
 
     @Override
@@ -119,19 +100,6 @@ public class FindLineStateTimeBased extends RobotState {
         this.timer.purge();
 
         super.stopRobot(context);
-    }
-
-    private void Transition(RobotStateContext context) {
-        IRobot robot = context.getRobot();
-
-        if (this.turnLeft) robot.stopTurnLeft();
-        else robot.stopTurnRight();
-        robot.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
-
-        robot.Beep();
-
-        // New state
-        context.setState(new FollowLineState(this.colorType));
     }
 }
 
