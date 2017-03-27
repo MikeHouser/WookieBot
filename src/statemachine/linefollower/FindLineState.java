@@ -42,6 +42,9 @@ public class FindLineState extends RobotState {
     }
 
     @Override
+    /**
+     * Gets called when the colored line has been found again
+     */
     public void transition(RobotStateContext context) {
         IRobot robot = context.getRobot();
 

@@ -111,8 +111,6 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
 
     @Override
     public void forward(int noOfSteps) {
-        super.forward();
-
         this.setDirection(Direction.FORWARD);
         this.runArgsSteps = noOfSteps;
 
@@ -121,8 +119,6 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
 
     @Override
     public void backward(int noOfSteps) {
-        super.backward();
-
         this.setDirection(Direction.BACKWARD);
         this.runArgsSteps = noOfSteps;
 
@@ -134,9 +130,13 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
     //region Implement Runnable
 
     @Override
+    /**
+     * Main execution point for the runnable interface implementation
+     */
     public void run() {
+        super.setIsRotating(true);
         this.startRotationAsync(this.runArgsSteps);
-        super.notifyMotorObservers(MotorMessage.AyncMotorStopped);
+        super.setIsRotating(false);
     }
 
     //endregion
@@ -166,12 +166,6 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
     @Override
     public void stop() {
         this.stopRotation();
-    }
-
-    @Override
-    public boolean isRotating() {
-        super.isRotating = this.thread != null && this.thread.isAlive();
-        return super.isRotating();
     }
 
     //endregion

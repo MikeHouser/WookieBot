@@ -2,10 +2,19 @@ package motor;
 
 import util.ConsoleHelper;
 
-public class MotorController implements IMotorController {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MotorController implements IMotorController, IMotorObserver, IMotorControllerObservable {
     private IMotor leftMotor;
     private IMotor rightMotor;
     private boolean waitForStop = false;
+
+    //region Observer Pattern
+    private boolean finishUnsubscribeCalled = false;
+    protected List<IMotorControllerObserver> observers = new ArrayList<>();
+    protected List<IMotorControllerObserver> observersToRemove = new ArrayList<>();
+    //endregion
 
     public MotorController(IMotor leftMotor, IMotor rightMotor) {
         this.leftMotor = leftMotor;
@@ -79,13 +88,23 @@ public class MotorController implements IMotorController {
     @Override
     public void init() {
         ConsoleHelper.printlnDefault("MotorController: init");
+
+        ((IMotorObservable)this.leftMotor).subscribeToMotorMessages(this);
+        ((IMotorObservable)this.rightMotor).subscribeToMotorMessages(this);
     }
 
     @Override
     public void deInit() {
         ConsoleHelper.printlnDefault("MotorController: deInit");
+
         this.leftMotor.deInit();
         this.rightMotor.deInit();
+
+        ((IMotorObservable)this.leftMotor).unsubscribeToMotorMessages(this);
+        ((IMotorObservable)this.rightMotor).unsubscribeToMotorMessages(this);
+
+        ((IMotorObservable)this.leftMotor).finishUnsubscribeToMotorMessages();
+        ((IMotorObservable)this.rightMotor).finishUnsubscribeToMotorMessages();
     }
 
     //region Stepper Functionality
@@ -110,6 +129,56 @@ public class MotorController implements IMotorController {
         } else {
             ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
         }
+    }
+
+    //endregion
+
+    //region Implement IMotorObserver
+
+    @Override
+    public void handleMotorMessage(MotorMessage message, MotorType motorType) {
+        if(this.leftMotor.isRotating() || this.rightMotor.isRotating()) {
+            // at least one motor is rotating
+            this.notifyMotorControllerObservers(MotorControllerMessage.MovementStarted);
+        } else {
+            // no motor is rotating
+            this.notifyMotorControllerObservers(MotorControllerMessage.MovementStopped);
+        }
+    }
+
+    //endregion
+
+    //region Implement IMotorControllerObservable
+
+    @Override
+    public void subscribeToMotorControllerMessages(IMotorControllerObserver observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public void unsubscribeToMotorControllerMessages(IMotorControllerObserver observer) {
+        this.observersToRemove.add(observer);
+    }
+
+    @Override
+    public void notifyMotorControllerObservers(MotorControllerMessage message) {
+        try {
+            for (IMotorControllerObserver observer : this.observers) observer.handleMotorControllerMessage(message);
+        } catch (java.util.ConcurrentModificationException concurrentModificationException) {
+            System.out.println(concurrentModificationException);
+        }
+
+        if(this.finishUnsubscribeCalled) {
+            this.observers.removeAll(this.observersToRemove);
+            this.observersToRemove.clear();
+
+            this.finishUnsubscribeCalled = false;
+        }
+    }
+
+    @Override
+    public void finishUnsubscribeToMotorControllerMessages() {
+        this.finishUnsubscribeCalled = true;
     }
 
     //endregion

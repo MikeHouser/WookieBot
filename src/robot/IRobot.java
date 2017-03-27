@@ -19,6 +19,7 @@ public interface IRobot {
     void stopDriveForward();
     void startDriveBackward();
     void stopDriveBackward();
+    void stopMovement();
 
     void setSpeed(int speed);
     void Beep();

@@ -1,5 +1,6 @@
 package motor;
 
 public enum MotorMessage {
-    AyncMotorStopped
+    MotorStarted,
+    MotorStopped
 }

@@ -9,4 +9,5 @@ public interface IMotor {
     void init();
     void deInit();
     boolean isRotating();
+    void setIsRotating(boolean isRotating);
 }

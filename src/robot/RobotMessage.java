@@ -14,5 +14,7 @@ public enum RobotMessage {
     CalibrationStarted,
     CalibrationFinished,
     AngleChanged,
-    DistanceChanged
+    DistanceChanged,
+    MovementStarted,
+    MovementStopped
 }

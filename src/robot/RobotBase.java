@@ -8,14 +8,16 @@ import config.RobotConfig;
 import distancesensor.DistanceController;
 import distancesensor.IDistanceObserver;
 import led.ILed;
+import motor.IMotorControllerObserver;
 import motor.MotorController;
+import motor.MotorControllerMessage;
 import shared.ColorType;
 import shared.ISensorController;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, IColorObserver, IDistanceObserver {
+public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, IColorObserver, IDistanceObserver, IMotorControllerObserver {
 
 	protected CompassController compassController;
     protected List<IRobotObserver> robotObservers = new ArrayList<IRobotObserver>();
@@ -30,6 +32,7 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
 
     }
 
+    @Override
     public void initRobot() {
 	    this.motorController.init();
 	    this.motorController.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
@@ -45,12 +48,14 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
         this.compassController.subscribeToAngleChange(this);
         this.colorController.subscribeToColorChange(this);
         this.distanceController.subscribeToDistanceChange(this);
+        this.motorController.subscribeToMotorControllerMessages(this);
     }
 
     public void initRobotComplete() {
         this.notifyObsevers(RobotMessage.Initialized);
     }
 
+    @Override
     public void deinitRobot() {
 
         // Unsubscribe
@@ -62,6 +67,9 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
 
         this.distanceController.unsubscribeToDistanceChange(this);
         this.distanceController.finishUnsubscribeToDistanceChange();
+
+        this.motorController.unsubscribeToMotorControllerMessages(this);
+        this.motorController.finishUnsubscribeToMotorControllerMessages();
 
         // Stop listening
         this.compassController.stopListening();
@@ -77,7 +85,8 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
 
         this.finishUnsubscribeToRobotMessages();
     }
-	
+
+    @Override
 	public void calibrateCompass() {
         this.notifyObsevers(RobotMessage.CalibrationStarted);
 
@@ -88,10 +97,12 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
         this.notifyObsevers(RobotMessage.CalibrationFinished);
 	}
 
+    @Override
     public void angleChanged(float angle) {
 	    this.notifyObsevers(RobotMessage.AngleChanged, Float.toString(angle));
     }
-	
+
+    @Override
 	public void performCalibrationDrive() {
         this.Beep();
 
@@ -124,56 +135,69 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
         this.Beep();
     }
 
+    @Override
     public void startTurnLeft() {
 	    this.motorController.startTurnLeft();
         this.notifyObsevers(RobotMessage.TurnLeftStarted);
     }
 
+    @Override
     public void stopTurnLeft() {
 	    this.motorController.stop();
         this.notifyObsevers(RobotMessage.TurnLeftStopped);
     }
 
+    @Override
     public void startTurnRight() {
 	    this.motorController.startTurnRight();
         this.notifyObsevers(RobotMessage.TurnRightStarted);
     }
 
+    @Override
     public void stopTurnRight() {
 	    this.motorController.stop();
         this.notifyObsevers(RobotMessage.TurnRightStopped);
     }
 
+    @Override
     public void startDriveForward() {
 	    this.motorController.startDriveForward();
         this.notifyObsevers(RobotMessage.DriveForwardStarted);
     }
 
+    @Override
     public void stopDriveForward() {
 	    this.motorController.stop();
         this.notifyObsevers(RobotMessage.DriveForwardStopped);
     }
 
+    @Override
     public void startDriveBackward() {
 	    this.motorController.startDriveBackward();
 	    this.notifyObsevers(RobotMessage.DriveBackwardStarted);
 	}
 
+    @Override
     public void stopDriveBackward() {
 	    this.motorController.stop();
 	    this.notifyObsevers(RobotMessage.DriveForwardStopped);
 	}
 
+	@Override
+    public void stopMovement() {
+        this.motorController.stop();
+    }
+
     //region Stepper Functionality
 
     @Override
     public void turnLeftWithSteps(int steps) {
-        // todo implement
+        this.motorController.turnLeftWithSteps(steps);
     }
 
     @Override
     public void turnRightWithSteps(int steps) {
-        // todo implement
+        this.motorController.turnRightWithSteps(steps);
     }
 
     //endregion
@@ -283,4 +307,23 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
     public void distanceChanged(float distance) {
         this.notifyObsevers(RobotMessage.DistanceChanged, Float.toString(distance));
     }
+
+    //region Implement IMotorControllerObserver
+
+    @Override
+    public void handleMotorControllerMessage(MotorControllerMessage message) {
+	    // forward messages
+	    switch (message) {
+            case MovementStarted: {
+                this.notifyObsevers(RobotMessage.MovementStarted);
+                break;
+            }
+            case MovementStopped: {
+                this.notifyObsevers(RobotMessage.MovementStopped);
+                break;
+            }
+        }
+    }
+
+    //endregion
 }

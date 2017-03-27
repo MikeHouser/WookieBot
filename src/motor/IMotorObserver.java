@@ -1,5 +1,5 @@
 package motor;
 
 public interface IMotorObserver {
-    void handleMotorMessage(MotorMessage message);
+    void handleMotorMessage(MotorMessage message, MotorType motorType);
 }

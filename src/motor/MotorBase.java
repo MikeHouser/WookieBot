@@ -13,7 +13,7 @@ public class MotorBase implements IMotor, IMotorObservable {
 
     protected  MotorType motorType = MotorType.UNDEFINED;
 
-    protected boolean isRotating = false;
+    private boolean isRotating = false;
 
     //region Observer Pattern
     private boolean finishUnsubscribeCalled = false;
@@ -59,17 +59,17 @@ public class MotorBase implements IMotor, IMotorObservable {
 
     @Override
     public void forward() {
-        this.isRotating = true;
+        this.setIsRotating(true);
     }
 
     @Override
     public void backward() {
-        this.isRotating = true;
+        this.setIsRotating(true);
     }
 
     @Override
     public void stop() {
-        this.isRotating = false;
+        this.setIsRotating(false);
     }
 
     @Override
@@ -87,6 +87,20 @@ public class MotorBase implements IMotor, IMotorObservable {
         return this.isRotating;
     }
 
+    @Override
+    public void setIsRotating(boolean isRotating) {
+        boolean oldValue = this.isRotating;
+        boolean newValue = isRotating;
+
+        this.isRotating = isRotating;
+
+        // Check if the value has changed
+        if(oldValue != newValue) {
+            if (newValue) this.notifyMotorObservers(MotorMessage.MotorStarted, this.motorType);
+            else this.notifyMotorObservers(MotorMessage.MotorStopped, this.motorType);
+        }
+    }
+
     //region Implement IMotorObervable
 
     @Override
@@ -100,9 +114,9 @@ public class MotorBase implements IMotor, IMotorObservable {
     }
 
     @Override
-    public void notifyMotorObservers(MotorMessage message) {
+    public void notifyMotorObservers(MotorMessage message, MotorType motorType) {
         try {
-            for (IMotorObserver observer : this.observers) observer.handleMotorMessage(message);
+            for (IMotorObserver observer : this.observers) observer.handleMotorMessage(message, motorType);
         } catch (java.util.ConcurrentModificationException concurrentModificationException) {
             System.out.println(concurrentModificationException);
         }

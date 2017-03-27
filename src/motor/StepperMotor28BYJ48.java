@@ -91,7 +91,6 @@ public class StepperMotor28BYJ48 extends StepperMotorBase {
         steps(steps);
     }
 
-
     public void step() throws InterruptedException  {
         if (super.direction == Direction.FORWARD) {
             this.lastSequenceIndex++;

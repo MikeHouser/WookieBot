@@ -2,6 +2,7 @@ package statemachine.linefollower;
 
 import config.RobotConfig;
 import robot.IRobot;
+import robot.RobotMessage;
 import shared.ColorType;
 import statemachine.RobotStateContext;
 
@@ -32,5 +33,21 @@ public class FindLineStateStepperBased extends FindLineState {
 
         if (this.turnLeft) robot.turnLeftWithSteps(this.steps);
         else robot.turnRightWithSteps(this.steps);
+    }
+
+    @Override
+    public void handleRobotMessage(RobotStateContext context, RobotMessage message, String data) {
+        super.handleRobotMessage(context, message, data);
+
+        switch (message) {
+            case MovementStopped: {
+                this.changeSearchDirection(context);
+                break;
+            }
+        }
+    }
+
+    private void changeSearchDirection(RobotStateContext context) {
+        context.setState(new FindLineStateStepperBased(this.steps, super.colorType, !super.turnLeft));
     }
 }
