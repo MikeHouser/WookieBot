@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Cockpit extends JFrame implements IStatemachineObserver {
+
     private JPanel panelMain;
     private JButton btnStart;
     private JButton btnStop;
@@ -30,6 +31,7 @@ public class Cockpit extends JFrame implements IStatemachineObserver {
     private JButton btnStartListenCompass;
     private JButton btnStopListenCompass;
     private JLabel lblDistance;
+
     private Wookiebot wookiebot;
     private RobotStateContext robotStateContext;
 
