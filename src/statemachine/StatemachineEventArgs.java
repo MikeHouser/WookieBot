@@ -6,6 +6,7 @@ public class StatemachineEventArgs {
 
     public String stateName = "";
     public boolean stateNameChanged = false;
+    public boolean stateNameWillChange = false;
 
     public String colorName = "";
     public boolean colorNameChanged = false;

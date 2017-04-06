@@ -1,3 +1,6 @@
 Manifest-Version: 1.0
-Main-Class: App
-Class-Path: /opt/pi4j/lib/pi4j-core.jar /opt/pi4j/lib/pi4j-gpio-extension.jar /home/pi/Documents/leJOS_EV3_0.9.0-beta/lib/ev3/ev3classes.jar
+Class-Path: /opt/pi4j/lib/pi4j-core.jar /opt/pi4j/lib/pi4j-gpio-extens
+ ion.jar /home/pi/Documents/leJOS_EV3_0.9.0-beta/lib/ev3/ev3classes.ja
+ r
+Main-Class: Main
+

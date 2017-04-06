@@ -4,6 +4,8 @@ import shared.ColorType;
 
 public class MockupColorSensor implements IColorSensor {
 
+    public static ColorType colorType = ColorType.NONE;
+
     @Override
     public void init() {
 
@@ -16,6 +18,6 @@ public class MockupColorSensor implements IColorSensor {
 
     @Override
     public ColorType getColorType() {
-        return ColorType.NONE;
+        return colorType;
     }
 }

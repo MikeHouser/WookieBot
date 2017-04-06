@@ -3,7 +3,6 @@
     <output-path>$PROJECT_DIR$/out/artifacts/WookieBot_jar</output-path>
     <root id="archive" name="WookieBot.jar">
       <element id="module-output" name="WookieBot" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/leJOS_EV3_0.9.1-beta/lib/ev3/ev3classes.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

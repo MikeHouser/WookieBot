@@ -1,13 +1,12 @@
 package gui;
 
-import main.Wookiebot;
+import config.RobotConfig;
 import statemachine.IStatemachineObserver;
+import statemachine.MockupRobotStateContext;
 import statemachine.RobotStateContext;
 import statemachine.StatemachineEventArgs;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -32,13 +31,11 @@ public class Cockpit extends JFrame implements IStatemachineObserver {
     private JButton btnStopListenCompass;
     private JLabel lblDistance;
 
-    private Wookiebot wookiebot;
     private RobotStateContext robotStateContext;
+    private GuiHelper guiHelper;
 
     public Cockpit() {
         super("Wookiebot");
-
-        this.wookiebot = new Wookiebot();
 
         setContentPane(this.panelMain);
 
@@ -55,39 +52,44 @@ public class Cockpit extends JFrame implements IStatemachineObserver {
         setVisible(true);
 
         // Add click listener
-        btnStart.addActionListener(e -> this.wookiebot.start());
-        btnStop.addActionListener(e -> this.wookiebot.stop());
+        btnStart.addActionListener(e -> this.guiHelper.startRobot());
+        btnStop.addActionListener(e -> this.guiHelper.stopRobot());
         turnLeftButton.addActionListener(e -> {
             int degrees = Integer.parseInt(this.txtTurnLeftAngle.getText());
-            this.wookiebot.turnLeft(degrees);
+            this.guiHelper.turnLeft(degrees);
         });
         btnRight.addActionListener(e -> {
             int degrees = Integer.parseInt(this.txtTurnRightAngle.getText());
-            this.wookiebot.turnRight(degrees);
+            this.guiHelper.turnRight(degrees);
         });
         btnFollowLine.addActionListener(e -> {
-            this.wookiebot.followLine();
+            this.guiHelper.startFollowLine();
         });
         btnStopListenDistance.addActionListener(e -> {
-            this.wookiebot.stopListenDistane();
+            this.guiHelper.stopListenDistane();
         });
         btnStartListenDistance.addActionListener(e -> {
-            this.wookiebot.startListenDistance();
+            this.guiHelper.startListenDistance();
         });
         btnStartListenColor.addActionListener(e -> {
-            this.wookiebot.startListenColor();
+            this.guiHelper.startListenColor();
         });
         btnStopListenColor.addActionListener(e -> {
-            this.wookiebot.stopListenColor();
+            this.guiHelper.stopListenColor();
         });
         btnStartListenCompass.addActionListener(e -> {
-            this.wookiebot.startListenCompass();
+            this.guiHelper.startListenCompass();
         });
         btnStopListenCompass.addActionListener(e -> {
-            this.wookiebot.stopListenCompass();
+            this.guiHelper.stopListenCompass();
         });
 
-        this.robotStateContext = this.wookiebot.getRobotStateContext();
+        if (RobotConfig.getUseMockupStateContext()) {
+            this.robotStateContext = new MockupRobotStateContext();
+        } else {
+            this.robotStateContext = new RobotStateContext();
+        }
+        this.guiHelper = new GuiHelper(this.robotStateContext);
         this.robotStateContext.subscribe(this);
     }
 

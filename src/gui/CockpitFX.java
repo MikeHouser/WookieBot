@@ -1,5 +1,6 @@
 package gui;
 
+import config.RobotConfig;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -8,17 +9,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import main.Wookiebot;
-import statemachine.IStatemachineObserver;
-import statemachine.RobotStateContext;
-import statemachine.StatemachineEventArgs;
+import statemachine.*;
 
 public class CockpitFX extends Application implements IStatemachineObserver {
 
     private final boolean DEBUG = false;
 
-    private Wookiebot wookiebot;
-    private RobotStateContext robotStateContext;
+    private RobotStateContext robotContext;
+    private GuiHelper guiHelper;
 
     //region JavaFX Controls
     private Scene scene;
@@ -103,11 +101,11 @@ public class CockpitFX extends Application implements IStatemachineObserver {
         this.tButtonRobotOff = new ToggleButton("Off");
         this.tButtonRobotOff.setToggleGroup(this.tGroupRobot);
         this.tButtonRobotOff.setSelected(true);
-        this.tButtonRobotOff.setOnAction(e -> this.wookiebot.stop());
+        this.tButtonRobotOff.setOnAction(e -> this.guiHelper.stopRobot());
 
         this.tButtonRobotOn = new ToggleButton("On");
         this.tButtonRobotOn.setToggleGroup(this.tGroupRobot);
-        this.tButtonRobotOn.setOnAction(e -> this.wookiebot.start());
+        this.tButtonRobotOn.setOnAction(e -> this.guiHelper.startRobot());
 
         this.hBoxRobot = new HBox();
         this.hBoxRobot.getChildren().addAll(this.tButtonRobotOff, this.tButtonRobotOn);
@@ -124,11 +122,15 @@ public class CockpitFX extends Application implements IStatemachineObserver {
         this.lblAngleValue.setText(this.defaultString);
         // Toggle On/Off
         this.tGrpAngle = new ToggleGroup();
+
         this.tBtnAngleOff = new ToggleButton("Off");
         this.tBtnAngleOff.setToggleGroup(this.tGrpAngle);
         this.tBtnAngleOff.setSelected(true);
+        this.tBtnAngleOff.setOnAction(e -> this.guiHelper.stopListenCompass());
+
         this.tBtnAngleOn = new ToggleButton("On");
         this.tBtnAngleOn.setToggleGroup(this.tGrpAngle);
+        this.tBtnAngleOn.setOnAction(e -> this.guiHelper.startListenCompass());
 
         this.hBoxAngle = new HBox();
         this.hBoxAngle.getChildren().addAll(this.tBtnAngleOff, this.tBtnAngleOn);
@@ -147,11 +149,15 @@ public class CockpitFX extends Application implements IStatemachineObserver {
 
         // Toggle On/Off
         this.tGrpColor = new ToggleGroup();
+
         this.tBtnColorOff = new ToggleButton("Off");
         this.tBtnColorOff.setToggleGroup(this.tGrpColor);
         this.tBtnColorOff.setSelected(true);
+        this.tBtnColorOff.setOnAction(e -> this.guiHelper.stopListenColor());
+
         this.tBtnColorOn = new ToggleButton("On");
         this.tBtnColorOn.setToggleGroup(this.tGrpColor);
+        this.tBtnColorOn.setOnAction(e -> this.guiHelper.startListenColor());
 
         this.hBoxColor = new HBox();
         this.hBoxColor.getChildren().addAll(this.tBtnColorOff, this.tBtnColorOn);
@@ -170,11 +176,15 @@ public class CockpitFX extends Application implements IStatemachineObserver {
 
         // Toggle On/Off
         this.tGrpDistance = new ToggleGroup();
+
         this.tBtnDistanceOff = new ToggleButton("Off");
         this.tBtnDistanceOff.setToggleGroup(this.tGrpDistance);
         this.tBtnDistanceOff.setSelected(true);
+        this.tBtnDistanceOff.setOnAction(e -> this.guiHelper.stopListenDistane());
+
         this.tBtnDistanceOn = new ToggleButton("On");
         this.tBtnDistanceOn.setToggleGroup(this.tGrpDistance);
+        this.tBtnDistanceOn.setOnAction(e -> this.guiHelper.startListenDistance());
 
         this.hBoxDistance = new HBox();
         this.hBoxDistance.getChildren().addAll(this.tBtnDistanceOff, this.tBtnDistanceOn);
@@ -188,7 +198,17 @@ public class CockpitFX extends Application implements IStatemachineObserver {
         this.lblTurn = new Label("Turn");
 
         this.btnTurnLeft = new Button("Turn left");
+        this.btnTurnLeft.setOnAction(e -> {
+            int degrees = Integer.parseInt(this.txtTurnAngle.getText());
+            this.guiHelper.turnLeft(degrees);
+        });
+
         this.btnTurnRight = new Button("Turn right");
+        this.btnTurnRight.setOnAction(e -> {
+            int degrees = Integer.parseInt(this.txtTurnAngle.getText());
+            this.guiHelper.turnRight(degrees);
+        });
+
         this.txtTurnAngle = new TextField();
         this.txtTurnAngle.setText("90");
 
@@ -203,11 +223,15 @@ public class CockpitFX extends Application implements IStatemachineObserver {
         //region Follow Line
         this.lblFollowLineCpation = new Label("Follow line:");
         this.tGroupFollowLine = new ToggleGroup();
+
         this.tBtnFollowLineOff = new ToggleButton("Off");
         this.tBtnFollowLineOff.setToggleGroup(this.tGroupFollowLine);
         this.tBtnFollowLineOff.setSelected(true);
+        this.tBtnFollowLineOff.setOnAction(e -> this.guiHelper.stopFollowLine());
+
         this.tBtnFollowLineOn = new ToggleButton("On");
         this.tBtnFollowLineOn.setToggleGroup(this.tGroupFollowLine);
+        this.tBtnFollowLineOn.setOnAction(e -> this.guiHelper.startFollowLine());
 
         this.hBoxFollowLine = new HBox();
         this.hBoxFollowLine.getChildren().addAll(this.tBtnFollowLineOff, this.tBtnFollowLineOn);
@@ -229,9 +253,13 @@ public class CockpitFX extends Application implements IStatemachineObserver {
     }
 
     private void initRobotStuff() {
-        this.wookiebot = new Wookiebot();
-        this.robotStateContext = this.wookiebot.getRobotStateContext();
-        this.robotStateContext.subscribe(this);
+        if (RobotConfig.getUseMockupStateContext()) {
+            this.robotContext = new MockupRobotStateContext();
+        } else {
+            this.robotContext = new RobotStateContext();
+        }
+        this.guiHelper = new GuiHelper(this.robotContext);
+        this.robotContext.subscribe(this);
     }
 
     @Override
@@ -250,7 +278,7 @@ public class CockpitFX extends Application implements IStatemachineObserver {
     }
 
     public void exitProcedure() {
-        this.robotStateContext.unsubscribe(this);
+        this.robotContext.unsubscribe(this);
         System.exit(0);
     }
 
@@ -278,4 +306,10 @@ public class CockpitFX extends Application implements IStatemachineObserver {
         this.tBtnAngleOff.setDisable(isOffline);
         this.tBtnAngleOn.setDisable(isOffline);
     }
+
+    //region Actions for the robot
+
+
+
+    //endregion
 }

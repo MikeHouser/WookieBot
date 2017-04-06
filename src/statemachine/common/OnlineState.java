@@ -7,9 +7,6 @@ import shared.UserCommandContainer;
 import statemachine.RobotState;
 import statemachine.RobotStateContext;
 import statemachine.linefollower.SetLineColorState;
-import util.ConsoleHelper;
-
-import java.awt.*;
 
 public class OnlineState extends RobotState {
 
@@ -45,7 +42,7 @@ public class OnlineState extends RobotState {
                 this.initiateTurn(context, command.intArg, false);
                 break;
             }
-            case LINE: {
+            case START_LINE: {
                 context.setState(new SetLineColorState());
             }
         }

@@ -27,6 +27,8 @@ public class RobotConfig {
 
     //endregion
 
+    public static boolean getUseMockupStateContext() { return getBoolean("UseMockupStateContext"); }
+
     // Robot Type
     public static boolean getUseLegoRobot() {
         return getBoolean("UseLegoRobot");

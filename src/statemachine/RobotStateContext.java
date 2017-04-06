@@ -1,9 +1,6 @@
 package statemachine;
 
-import robot.IRobot;
-import robot.IRobotObservable;
-import robot.IRobotObserver;
-import robot.RobotMessage;
+import robot.*;
 import shared.ColorType;
 import shared.UserCommandContainer;
 import statemachine.common.OfflineState;
@@ -30,14 +27,19 @@ public class RobotStateContext implements IRobotObserver, IStatemachineObservabl
         this.calibrationDone = calibrationDone;
     }
 
-    public RobotStateContext(IRobot robot) {
-        this.robot = robot;
+    public RobotStateContext() {
+        this.robot = RobotFactory.CreateRobot();
         this.currentState = new OfflineState();
     }
 
     public void setState(final RobotState newState) {
         // Backup mechanism to prevent unwanted transitions after stop has been called
         if (this.stopCalled && !(newState instanceof OfflineState)) return;
+
+        StatemachineEventArgs eventArgsPreChange = new StatemachineEventArgs();
+        eventArgsPreChange.stateName = newState.getName();
+        eventArgsPreChange.stateNameWillChange = true;
+        this.notifyObservers(eventArgsPreChange);
 
         this.currentState = newState;
 
@@ -82,6 +84,7 @@ public class RobotStateContext implements IRobotObserver, IStatemachineObservabl
     }
 
     public void startRobot() {
+        this.stopCalled = false;
         ((IRobotObservable)this.robot).subscribeToRobotMessages(this);
         this.currentState.startRobot(this);
     }
