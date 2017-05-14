@@ -9,6 +9,7 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
     protected boolean invertDirection = false;
     protected Thread thread = null;
     private int runArgsSteps = 0;
+    private final boolean CONSOLE_OUTPUT = false;
 
     public StepperMotorBase(int minSpeedAbs, int maxSpeedAbs, MotorType motorType, boolean invertDirection, SteppingMethod steppingMethod) {
         super(minSpeedAbs, maxSpeedAbs, motorType);
@@ -73,7 +74,9 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
                 // run infinite async unitl interrupted
                 while (true) {
                     if (Thread.interrupted()) {
-                        ConsoleHelper.printlnDefault("StepperMotorBase: startRotationAsync -> Interrupted");
+                        if (CONSOLE_OUTPUT) {
+                            ConsoleHelper.printlnDefault("StepperMotorBase: startRotationAsync -> Interrupted");
+                        }
                         return;
                     } else {
                         this.step();
@@ -87,7 +90,9 @@ public class StepperMotorBase extends MotorBase implements IStepperMotor, Runnab
 
     @Override
     public void stopRotation() {
-        ConsoleHelper.printlnDefault("StepperMotorBase: stopRotation");
+        if (CONSOLE_OUTPUT) {
+            ConsoleHelper.printlnDefault("StepperMotorBase: stopRotation");
+        }
 
         this.thread.interrupt();
     }

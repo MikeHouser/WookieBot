@@ -12,6 +12,7 @@ import java.text.MessageFormat;
 
 public class FollowLineState extends RobotState {
     private ColorType colorType;
+    private final boolean CONSOLE_OUTPUT = true;
 
     public FollowLineState(ColorType colorType) {
         this.colorType = colorType;
@@ -38,12 +39,34 @@ public class FollowLineState extends RobotState {
             case ColorChanged: {
                 ColorType newColor = ColorType.valueOf(data);
                 if (newColor != this.colorType) {
-                    ConsoleHelper.printlnPurple(MessageFormat.format("Lost the color to follow {0} and found {1} instead.", this.colorType, newColor));
+                    if (CONSOLE_OUTPUT) {
+                        ConsoleHelper.printlnPurple(MessageFormat.format(
+                                "Lost the color to follow {0} and found {1} instead.",
+                                this.colorType, newColor));
+                    }
 
                     // Stop movement
                     robot.stopDriveForward();
 
-                    this.transition(context);
+                    new Thread(() -> {
+                        if (CONSOLE_OUTPUT) {
+                            ConsoleHelper.printlnDefault("Wait for motors to stop - start");
+                        }
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        context.getRobot().waitForMotorsToStop();
+
+                        if (CONSOLE_OUTPUT) {
+                            ConsoleHelper.printlnDefault("Wait for motors to stop - stop");
+                        }
+
+                        transition(context);
+                    } ).start();
                 }
             }
         }

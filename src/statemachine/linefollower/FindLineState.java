@@ -20,7 +20,7 @@ public class FindLineState extends RobotState {
 
     @Override
     public String getName() {
-        return "Find line";
+        return String.format("Find line -> turnLeft %s | colorType %s", this.turnLeft, this.colorType);
     }
 
     @Override

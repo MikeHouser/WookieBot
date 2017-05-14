@@ -21,6 +21,7 @@ public class StepperMotor28BYJ48 extends StepperMotorBase {
 
     private int lastSequenceIndex = 0;
     private GpioPinDigitalOutput[] motorPins;
+    private final boolean CONSOLE_OUTPUT = false;
 
     //endregion
 
@@ -124,7 +125,9 @@ public class StepperMotor28BYJ48 extends StepperMotorBase {
         try {
             Thread.sleep(super.currentSpeed);
         } catch (InterruptedException e) {
-            ConsoleHelper.printlnDefault("StepperMotor28BYJ48: writeSequence -> Interrupted");
+            if (CONSOLE_OUTPUT) {
+                ConsoleHelper.printlnDefault("StepperMotor28BYJ48: writeSequence -> Interrupted");
+            }
             throw e;
         }
     }

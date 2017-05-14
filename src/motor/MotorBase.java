@@ -15,6 +15,8 @@ public class MotorBase implements IMotor, IMotorObservable {
 
     private boolean isRotating = false;
 
+    private final boolean CONSOLE_OUTPUT = false;
+
     //region Observer Pattern
     private boolean finishUnsubscribeCalled = false;
     protected List<IMotorObserver> observers = new ArrayList<IMotorObserver>();
@@ -49,7 +51,9 @@ public class MotorBase implements IMotor, IMotorObservable {
             float temp = Math.abs((onePercent * speedInPercent) + offset);
             this.currentSpeed = Math.round(temp);
         }
-        ConsoleHelper.printlnDefault("Motor (" + this.motorType.name() + "): Speed is set to " + this.currentSpeed);
+        if (CONSOLE_OUTPUT) {
+            ConsoleHelper.printlnDefault("Motor (" + this.motorType.name() + "): Speed is set to " + this.currentSpeed);
+        }
     }
 
     @Override

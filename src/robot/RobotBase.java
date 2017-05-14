@@ -188,6 +188,11 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
         this.motorController.stop();
     }
 
+    @Override
+    public void waitForMotorsToStop() {
+        this.motorController.waitForMotorsToStop();
+    }
+
     //region Stepper Functionality
 
     @Override

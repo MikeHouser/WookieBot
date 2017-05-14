@@ -21,6 +21,8 @@ public interface IRobot {
     void stopDriveBackward();
     void stopMovement();
 
+    void waitForMotorsToStop();
+
     void setSpeed(int speed);
     void Beep();
 

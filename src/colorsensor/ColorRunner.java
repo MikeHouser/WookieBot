@@ -25,6 +25,8 @@ public class ColorRunner implements Runnable, IColorObservable {
 
     private IColorSensor colorSensor;
 
+    private final boolean CONSOLE_OUTPUT = true;
+
     public ColorRunner(IColorSensor colorSensor) {
         this.colorSensor = colorSensor;
     }
@@ -38,12 +40,16 @@ public class ColorRunner implements Runnable, IColorObservable {
     }
 
     public void requestStop() {
-        System.out.println("ColorRunner: Shutdown has been called.");
+        if (CONSOLE_OUTPUT) {
+            ConsoleHelper.printlnDefault("ColorRunner: Shutdown has been called.");
+        }
         this.stopRequested = true;
     }
 
     public void readData() {
-        System.out.println("ColorRunner: Started listening on color data");
+        if (CONSOLE_OUTPUT) {
+            ConsoleHelper.printlnDefault("ColorRunner: Started listening on color data");
+        }
 
         while (!this.stopRequested) {
             this.isRunning = true;
@@ -54,7 +60,9 @@ public class ColorRunner implements Runnable, IColorObservable {
         this.isRunning = false;
         this.stopRequested = false;
 
-        System.out.println("ColorRunner: Shutdown complete");
+        if (CONSOLE_OUTPUT) {
+            ConsoleHelper.printlnDefault("ColorRunner: Shutdown complete");
+        }
 
         this.finishUnsubscribeToColorChangeCalled = true;
     }
@@ -62,7 +70,9 @@ public class ColorRunner implements Runnable, IColorObservable {
     private void setColor(ColorType newColorType) {
         if (this.currentColorType != newColorType) {
             this.currentColorType = newColorType;
-            ConsoleHelper.printlnDefault("New color detected: " + newColorType.name());
+            if (CONSOLE_OUTPUT) {
+                ConsoleHelper.printlnRed("New color detected: " + newColorType.name());
+            }
 
             try {
                 for (IColorObserver colorObserver : this.colorObservers) {

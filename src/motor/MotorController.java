@@ -9,6 +9,7 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
     private IMotor leftMotor;
     private IMotor rightMotor;
     private boolean waitForStop = false;
+    private final boolean CONSOLE_OUTPUT = false;
 
     //region Observer Pattern
     private boolean finishUnsubscribeCalled = false;
@@ -21,13 +22,14 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
         this.rightMotor = rightMotor;
     }
 
-    private void waitForMotorsToStop() {
+    public void waitForMotorsToStop() {
         while(this.leftMotor.isRotating() || this.rightMotor.isRotating()) {
 
             try {
                 if(!this.waitForStop) {
                     // Print this message just one time
-                    ConsoleHelper.printlnDefault("One motor is still rotating.");
+                    if (CONSOLE_OUTPUT)
+                        ConsoleHelper.printlnDefault("One motor is still rotating.");
                 }
                 this.waitForStop = true;
 
@@ -41,53 +43,56 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
 
     @Override
     public void stop() {
-        ConsoleHelper.printlnDefault("MotorController: stop");
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: stop");
         this.leftMotor.stop();
         this.rightMotor.stop();
     }
 
     @Override
     public void startTurnLeft() {
-        ConsoleHelper.printlnDefault("MotorController: startTurnLeft");
-        this.waitForMotorsToStop();
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: startTurnLeft");
         this.leftMotor.backward();
         this.rightMotor.forward();
     }
 
     @Override
     public void startTurnRight() {
-        ConsoleHelper.printlnDefault("MotorController: startTurnRight");
-        this.waitForMotorsToStop();
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: startTurnRight");
         this.leftMotor.forward();
         this.rightMotor.backward();
     }
 
     @Override
     public void startDriveForward() {
-        ConsoleHelper.printlnDefault("MotorController: startDriveForward");
-        this.waitForMotorsToStop();
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: startDriveForward");
         this.leftMotor.forward();
         this.rightMotor.forward();
     }
 
     @Override
     public void startDriveBackward() {
-        ConsoleHelper.printlnDefault("MotorController: startDriveBackward");
-        this.waitForMotorsToStop();
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: startDriveBackward");
         this.leftMotor.backward();
         this.rightMotor.backward();
     }
 
     @Override
     public void setSpeed(int speed) {
-        ConsoleHelper.printlnDefault("MotorController: setSpeed");
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: setSpeed");
         this.leftMotor.setSpeed(speed);
         this.rightMotor.setSpeed(speed);
     }
 
     @Override
     public void init() {
-        ConsoleHelper.printlnDefault("MotorController: init");
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: init");
 
         ((IMotorObservable)this.leftMotor).subscribeToMotorMessages(this);
         ((IMotorObservable)this.rightMotor).subscribeToMotorMessages(this);
@@ -95,7 +100,8 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
 
     @Override
     public void deInit() {
-        ConsoleHelper.printlnDefault("MotorController: deInit");
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault("MotorController: deInit");
 
         this.leftMotor.deInit();
         this.rightMotor.deInit();
@@ -111,23 +117,29 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
 
     @Override
     public void turnLeftWithSteps(int steps) {
-        ConsoleHelper.printlnDefault(String.format("MotorController: turnLeftWithSteps(%1)", steps));
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault(String.format("MotorController: turnLeftWithSteps(%d)", steps));
+
         if(this.leftMotor instanceof IStepperMotor && this.rightMotor instanceof IStepperMotor) {
             ((IStepperMotor) this.leftMotor).backward(steps);
             ((IStepperMotor) this.rightMotor).forward(steps);
         } else {
-            ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
+            if (CONSOLE_OUTPUT)
+                ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
         }
     }
 
     @Override
     public void turnRightWithSteps(int steps) {
-        ConsoleHelper.printlnDefault(String.format("MotorController: turnRightWithSteps(%1)", steps));
+        if (CONSOLE_OUTPUT)
+            ConsoleHelper.printlnDefault(String.format("MotorController: turnRightWithSteps(%d)", steps));
+
         if(this.leftMotor instanceof IStepperMotor && this.rightMotor instanceof IStepperMotor) {
             ((IStepperMotor) this.leftMotor).forward(steps);
             ((IStepperMotor) this.rightMotor).backward(steps);
         } else {
-            ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
+            if (CONSOLE_OUTPUT)
+                ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
         }
     }
 
