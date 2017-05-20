@@ -27,6 +27,20 @@ public class FollowLineState extends RobotState {
     public void initState(RobotStateContext context) {
         super.initState(context);
 
+        this.performAction(context);
+    }
+
+    private void performAction(RobotStateContext context) {
+        /*
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            context.getRobot().startDriveForward();
+        } ).start(); */
         context.getRobot().startDriveForward();
     }
 
@@ -49,21 +63,7 @@ public class FollowLineState extends RobotState {
                     robot.stopDriveForward();
 
                     new Thread(() -> {
-                        if (CONSOLE_OUTPUT) {
-                            ConsoleHelper.printlnDefault("Wait for motors to stop - start");
-                        }
-
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
                         context.getRobot().waitForMotorsToStop();
-
-                        if (CONSOLE_OUTPUT) {
-                            ConsoleHelper.printlnDefault("Wait for motors to stop - stop");
-                        }
 
                         transition(context);
                     } ).start();
@@ -76,9 +76,9 @@ public class FollowLineState extends RobotState {
     public void transition(RobotStateContext context) {
         RobotState newState;
        if(RobotConfig.getFindLineTimeBased()) {
-           newState = new FindLineStateTimeBased(RobotConfig.getFindLineInitialMoveMs(), this.colorType, true);
+           newState = new FindLineStateTimeBased(RobotConfig.getFindLineInitialMoveMs(), this.colorType, FindLineState.lastFoundOnLeft);
        } else {
-           newState = new FindLineStateStepperBased(0, this.colorType, true);
+           newState = new FindLineStateStepperBased(0, this.colorType, FindLineState.lastFoundOnLeft);
        }
 
         context.setState(newState);

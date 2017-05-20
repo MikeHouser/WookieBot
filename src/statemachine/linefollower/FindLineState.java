@@ -12,6 +12,9 @@ public class FindLineState extends RobotState {
     protected ColorType colorType;
     protected boolean turnLeft = true;
     protected boolean stopInit = false;
+    protected boolean colorFound = false;
+
+    public static boolean lastFoundOnLeft = true;
 
     public FindLineState(ColorType colorType, boolean turnLeft) {
         this.colorType = colorType;
@@ -20,7 +23,12 @@ public class FindLineState extends RobotState {
 
     @Override
     public String getName() {
-        return String.format("Find line -> turnLeft %s | colorType %s", this.turnLeft, this.colorType);
+        return "Find line";
+    }
+
+    @Override
+    public String getDebugInfo() {
+        return String.format("turnLeft %s, colorType %s", this.turnLeft, this.colorType);
     }
 
     @Override
@@ -66,6 +74,9 @@ public class FindLineState extends RobotState {
             case ColorChanged: {
                 ColorType newColorType = ColorType.valueOf(data);
                 if(newColorType == this.colorType) {
+                    // Cool ... Found the line again
+                    this.colorFound = true;
+                    lastFoundOnLeft = this.turnLeft;
                     this.colorFound(context);
                 }
             }

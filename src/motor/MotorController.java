@@ -23,6 +23,10 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
     }
 
     public void waitForMotorsToStop() {
+        if (CONSOLE_OUTPUT) {
+           ConsoleHelper.printlnDefault("waitForMotorsToStop: Start");
+        }
+
         while(this.leftMotor.isRotating() || this.rightMotor.isRotating()) {
 
             try {
@@ -39,6 +43,10 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
             }
         }
         this.waitForStop = false;
+
+        if (CONSOLE_OUTPUT) {
+            ConsoleHelper.printlnDefault("waitForMotorsToStop: Stop");
+        }
     }
 
     @Override

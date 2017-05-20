@@ -5,14 +5,24 @@ import shared.UserCommandContainer;
 import statemachine.common.OfflineState;
 import util.ConsoleHelper;
 
+import javax.swing.*;
+
 public class RobotState {
 
     public String getName() {
         return "RobotState";
     }
 
+    public String getDebugInfo() { return ""; }
+
     public void writeMessage() {
-        ConsoleHelper.printlnDefault("State:  " + this.getName());
+        String debugInfo = this.getDebugInfo();
+        String message = String.format("State: %s", this.getName());
+        if (debugInfo.length() > 0) {
+            message += String.format(" / Debug Info: %s", debugInfo);
+        }
+
+        ConsoleHelper.printlnDefault(message);
     }
 
     public void initState(RobotStateContext context) {

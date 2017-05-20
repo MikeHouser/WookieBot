@@ -4,10 +4,13 @@ import robot.*;
 import shared.ColorType;
 import shared.UserCommandContainer;
 import statemachine.common.OfflineState;
+import util.ConsoleHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RobotStateContext implements IRobotObserver, IStatemachineObservable {
+
     private RobotState currentState;
     private boolean stopCalled = false;
 
