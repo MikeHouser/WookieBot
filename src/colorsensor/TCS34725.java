@@ -109,6 +109,8 @@ public class TCS34725
 
     private static boolean verbose = false;
 
+    private int r, g, b, c = 0;
+
     private I2CBus bus;
     private I2CDevice tcs34725;
 
@@ -219,7 +221,20 @@ public class TCS34725
         int b = this.readU16(TCS34725_BDATAL);
         int g = this.readU16(TCS34725_GDATAL);
         int c = this.readU16(TCS34725_CDATAL);
-        ThreadHelper.waitFor(INTEGRATION_TIME_DELAY.get(this.integrationTime) / 1000L);
+
+        try {
+            Thread.sleep(INTEGRATION_TIME_DELAY.get(this.integrationTime) / 1000L);
+        } catch (InterruptedException ie) {
+            // return last color if there was a problem with the delay
+            return new CustomColor(this.r, this.b, this.g, this.c);
+        }
+
+        // store current color as backup if the next reading fails
+        this.r = r;
+        this.b = b;
+        this.g = g;
+        this.c = c;
+
         return new CustomColor(r, b, g, c);
     }
 

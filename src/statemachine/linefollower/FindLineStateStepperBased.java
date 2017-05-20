@@ -4,6 +4,7 @@ import config.RobotConfig;
 import robot.IRobot;
 import robot.RobotMessage;
 import shared.ColorType;
+import statemachine.RobotState;
 import statemachine.RobotStateContext;
 import util.ConsoleHelper;
 
@@ -46,20 +47,6 @@ public class FindLineStateStepperBased extends FindLineState {
     }
 
     private void performAction(RobotStateContext context) {
-        /*
-        new Thread(() -> {
-
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            IRobot robot = context.getRobot();
-            if (this.turnLeft) robot.turnLeftWithSteps(this.steps);
-            else robot.turnRightWithSteps(this.steps);
-        } ).start();
-        */
         IRobot robot = context.getRobot();
         if (this.turnLeft) robot.turnLeftWithSteps(this.steps);
         else robot.turnRightWithSteps(this.steps);
@@ -73,13 +60,17 @@ public class FindLineStateStepperBased extends FindLineState {
             case MovementStopped: {
                 if(super.colorFound) return;
 
-                this.changeSearchDirection(context);
+                this.changeSearchDirectionTransition(context);
                 break;
             }
         }
     }
 
-    private void changeSearchDirection(RobotStateContext context) {
-        context.setState(new FindLineStateStepperBased(this.steps, super.colorType, !super.turnLeft));
+    private synchronized void changeSearchDirectionTransition(RobotStateContext context) {
+        if (super.searchTransitionStarted) return;
+        super.searchTransitionStarted = true;
+
+        RobotState newState = new StopMovementAndFindLineStepperBased(super.colorType, !super.turnLeft, this.steps);
+        context.setState(newState);
     }
 }

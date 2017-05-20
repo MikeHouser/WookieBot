@@ -189,8 +189,8 @@ public class RobotBase implements IRobot, IAngleObserver, IRobotObservable, ICol
     }
 
     @Override
-    public void waitForMotorsToStop() {
-        this.motorController.waitForMotorsToStop();
+    public boolean getIsMoving() {
+        return this.motorController.getIsMoving();
     }
 
     //region Stepper Functionality

@@ -31,24 +31,16 @@ public class FollowLineState extends RobotState {
     }
 
     private void performAction(RobotStateContext context) {
-        /*
-        new Thread(() -> {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        IRobot robot = context.getRobot();
 
-            context.getRobot().startDriveForward();
-        } ).start(); */
-        context.getRobot().startDriveForward();
+        robot.setSpeed(RobotConfig.getSearchMotorSpeedInPercent());
+        robot.startDriveForward();
     }
 
     @Override
     public void handleRobotMessage(RobotStateContext context, RobotMessage message, String data) {
         super.handleRobotMessage(context, message, data);
 
-        IRobot robot = context.getRobot();
         switch (message) {
             case ColorChanged: {
                 ColorType newColor = ColorType.valueOf(data);
@@ -59,14 +51,7 @@ public class FollowLineState extends RobotState {
                                 this.colorType, newColor));
                     }
 
-                    // Stop movement
-                    robot.stopDriveForward();
-
-                    new Thread(() -> {
-                        context.getRobot().waitForMotorsToStop();
-
-                        transition(context);
-                    } ).start();
+                    this.transition(context);
                 }
             }
         }
@@ -75,11 +60,11 @@ public class FollowLineState extends RobotState {
     @Override
     public void transition(RobotStateContext context) {
         RobotState newState;
-       if(RobotConfig.getFindLineTimeBased()) {
-           newState = new FindLineStateTimeBased(RobotConfig.getFindLineInitialMoveMs(), this.colorType, FindLineState.lastFoundOnLeft);
-       } else {
-           newState = new FindLineStateStepperBased(0, this.colorType, FindLineState.lastFoundOnLeft);
-       }
+        if(RobotConfig.getFindLineTimeBased()) {
+            newState = new StopMovementAndFindLineTimeBased(this.colorType, FindLineState.lastFoundOnLeft, RobotConfig.getFindLineInitialMoveMs());
+        } else {
+            newState = new StopMovementAndFindLineStepperBased(this.colorType, FindLineState.lastFoundOnLeft, 0);
+        }
 
         context.setState(newState);
     }

@@ -13,6 +13,8 @@ public class FindLineState extends RobotState {
     protected boolean turnLeft = true;
     protected boolean stopInit = false;
     protected boolean colorFound = false;
+    protected boolean foundtransitionStarted = false;
+    protected boolean searchTransitionStarted = false;
 
     public static boolean lastFoundOnLeft = true;
 
@@ -53,17 +55,12 @@ public class FindLineState extends RobotState {
     /**
      * Gets called when the colored line has been found again
      */
-    public void transition(RobotStateContext context) {
-        IRobot robot = context.getRobot();
-
-        if (this.turnLeft) robot.stopTurnLeft();
-        else robot.stopTurnRight();
-        robot.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
-
-        robot.Beep();
+    public synchronized void transition(RobotStateContext context) {
+        if (this.foundtransitionStarted) return;
+        this.foundtransitionStarted = true;
 
         // New state
-        context.setState(new FollowLineState(this.colorType));
+        context.setState(new StopMovementAndFollowLine(this.colorType, this.turnLeft));
     }
 
     @Override

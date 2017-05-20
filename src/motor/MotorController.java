@@ -22,31 +22,9 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
         this.rightMotor = rightMotor;
     }
 
-    public void waitForMotorsToStop() {
-        if (CONSOLE_OUTPUT) {
-           ConsoleHelper.printlnDefault("waitForMotorsToStop: Start");
-        }
-
-        while(this.leftMotor.isRotating() || this.rightMotor.isRotating()) {
-
-            try {
-                if(!this.waitForStop) {
-                    // Print this message just one time
-                    if (CONSOLE_OUTPUT)
-                        ConsoleHelper.printlnDefault("One motor is still rotating.");
-                }
-                this.waitForStop = true;
-
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        this.waitForStop = false;
-
-        if (CONSOLE_OUTPUT) {
-            ConsoleHelper.printlnDefault("waitForMotorsToStop: Stop");
-        }
+    @Override
+    public boolean getIsMoving() {
+        return this.leftMotor.isRotating() || this.rightMotor.isRotating();
     }
 
     @Override

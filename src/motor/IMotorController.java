@@ -10,6 +10,8 @@ public interface IMotorController {
     void init();
     void deInit();
 
+    boolean getIsMoving();
+
     // Stepper Functionality
     void turnLeftWithSteps(int steps);
     void turnRightWithSteps(int steps);

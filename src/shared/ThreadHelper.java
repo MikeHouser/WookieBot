@@ -5,6 +5,7 @@ public class ThreadHelper {
         try {
             Thread.sleep(timespan);
         } catch (InterruptedException ie) {
-            ie.printStackTrace(); }
+            //ie.printStackTrace();
+        }
     }
 }
