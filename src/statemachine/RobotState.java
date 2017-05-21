@@ -3,11 +3,14 @@ package statemachine;
 import robot.RobotMessage;
 import shared.UserCommandContainer;
 import statemachine.common.OfflineState;
+import statemachine.common.OnlineState;
 import util.ConsoleHelper;
 
 import javax.swing.*;
 
 public class RobotState {
+
+    protected volatile boolean transitionStarted = false;
 
     public String getName() {
         return "RobotState";
@@ -74,5 +77,13 @@ public class RobotState {
                 break;
             }
         }
+    }
+
+    public synchronized void transitionToOnline(RobotStateContext context) {
+        if (this.transitionStarted) return;
+        this.transitionStarted = true;
+
+        context.getRobot().stopMovement();
+        context.setState(new OnlineState());
     }
 }

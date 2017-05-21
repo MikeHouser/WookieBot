@@ -30,6 +30,7 @@ public class Cockpit extends JFrame implements IStatemachineObserver {
     private JButton btnStartListenCompass;
     private JButton btnStopListenCompass;
     private JLabel lblDistance;
+    private JButton btnFollowLineStop;
 
     private RobotStateContext robotStateContext;
     private GuiHelper guiHelper;
@@ -64,6 +65,9 @@ public class Cockpit extends JFrame implements IStatemachineObserver {
         });
         btnFollowLine.addActionListener(e -> {
             this.guiHelper.startFollowLine();
+        });
+        btnFollowLineStop.addActionListener(e -> {
+            this.guiHelper.stopFollowLine();
         });
         btnStopListenDistance.addActionListener(e -> {
             this.guiHelper.stopListenDistane();

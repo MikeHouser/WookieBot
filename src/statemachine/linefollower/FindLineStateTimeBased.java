@@ -1,10 +1,7 @@
 package statemachine.linefollower;
 
-import config.RobotConfig;
 import robot.IRobot;
-import robot.RobotMessage;
 import shared.ColorType;
-import statemachine.RobotState;
 import statemachine.RobotStateContext;
 import util.ConsoleHelper;
 

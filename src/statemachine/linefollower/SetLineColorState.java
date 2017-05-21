@@ -6,7 +6,7 @@ import statemachine.RobotState;
 import statemachine.RobotStateContext;
 import util.ConsoleHelper;
 
-public class SetLineColorState extends RobotState {
+public class SetLineColorState extends LineFollowerState {
 
     @Override
     public String getName() {

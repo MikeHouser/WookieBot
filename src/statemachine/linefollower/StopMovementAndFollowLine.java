@@ -7,10 +7,9 @@ import shared.ColorType;
 import statemachine.RobotState;
 import statemachine.RobotStateContext;
 
-public class StopMovementAndFollowLine extends RobotState {
+public class StopMovementAndFollowLine extends LineFollowerState {
 
     private ColorType colorType;
-    private boolean transitionStarted = false;
     private boolean turnLeft;
 
     public StopMovementAndFollowLine(ColorType colorType, boolean turnLeft) {
@@ -32,11 +31,9 @@ public class StopMovementAndFollowLine extends RobotState {
         } else {
             IRobot robot = context.getRobot();
 
+            // Stop movement
             if (this.turnLeft) robot.stopTurnLeft();
             else robot.stopTurnRight();
-            robot.setSpeed(RobotConfig.getSearchMotorSpeedInPercent());
-
-            robot.Beep();
         }
     }
 
@@ -54,8 +51,8 @@ public class StopMovementAndFollowLine extends RobotState {
 
     @Override
     public synchronized void transition(RobotStateContext context) {
-        if(this.transitionStarted) return;
-        this.transitionStarted = true;
+        if(super.transitionStarted) return;
+        super.transitionStarted = true;
 
         RobotState newState = new FollowLineState(this.colorType);
 

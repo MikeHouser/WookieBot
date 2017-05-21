@@ -24,7 +24,7 @@ public class StopMovementAndFindLineStepperBased extends StopMovementAndFindLine
         if (super.transitionStarted) return;
         super.transitionStarted = true;
 
-        RobotState newState = new FindLineStateStepperBased(0, super.colorType, super.turnLeft);
+        RobotState newState = new FindLineStateStepperBased(this.steps, super.colorType, super.turnLeft);
 
         context.setState(newState);
     }

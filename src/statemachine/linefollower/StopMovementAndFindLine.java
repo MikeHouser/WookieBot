@@ -6,11 +6,10 @@ import shared.ColorType;
 import statemachine.RobotState;
 import statemachine.RobotStateContext;
 
-public class StopMovementAndFindLine extends RobotState {
+public class StopMovementAndFindLine extends LineFollowerState {
 
     protected ColorType colorType;
     protected boolean turnLeft;
-    protected boolean transitionStarted = false;
 
     public StopMovementAndFindLine(ColorType colorType, boolean turnLeft) {
         this.colorType = colorType;

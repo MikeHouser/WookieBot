@@ -67,8 +67,8 @@ public class FindLineStateStepperBased extends FindLineState {
     }
 
     private synchronized void changeSearchDirectionTransition(RobotStateContext context) {
-        if (super.searchTransitionStarted) return;
-        super.searchTransitionStarted = true;
+        if (super.transitionStarted) return;
+        super.transitionStarted = true;
 
         RobotState newState = new StopMovementAndFindLineStepperBased(super.colorType, !super.turnLeft, this.steps);
         context.setState(newState);

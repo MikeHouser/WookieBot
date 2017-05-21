@@ -10,7 +10,7 @@ import util.ConsoleHelper;
 
 import java.text.MessageFormat;
 
-public class FollowLineState extends RobotState {
+public class FollowLineState extends LineFollowerState {
     private ColorType colorType;
     private final boolean CONSOLE_OUTPUT = true;
 
@@ -33,7 +33,12 @@ public class FollowLineState extends RobotState {
     private void performAction(RobotStateContext context) {
         IRobot robot = context.getRobot();
 
-        robot.setSpeed(RobotConfig.getSearchMotorSpeedInPercent());
+        if (robot.getColor() != this.colorType) {
+            this.transition(context);
+            return;
+        }
+
+        robot.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
         robot.startDriveForward();
     }
 
@@ -58,7 +63,10 @@ public class FollowLineState extends RobotState {
     }
 
     @Override
-    public void transition(RobotStateContext context) {
+    public synchronized void transition(RobotStateContext context) {
+        if (super.transitionStarted) return;
+        super.transitionStarted = true;
+
         RobotState newState;
         if(RobotConfig.getFindLineTimeBased()) {
             newState = new StopMovementAndFindLineTimeBased(this.colorType, FindLineState.lastFoundOnLeft, RobotConfig.getFindLineInitialMoveMs());

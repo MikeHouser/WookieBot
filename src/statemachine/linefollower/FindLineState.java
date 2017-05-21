@@ -4,17 +4,16 @@ import config.RobotConfig;
 import robot.IRobot;
 import robot.RobotMessage;
 import shared.ColorType;
+import shared.UserCommandContainer;
 import statemachine.RobotState;
 import statemachine.RobotStateContext;
 
-public class FindLineState extends RobotState {
+public class FindLineState extends LineFollowerState {
 
     protected ColorType colorType;
     protected boolean turnLeft = true;
     protected boolean stopInit = false;
     protected boolean colorFound = false;
-    protected boolean foundtransitionStarted = false;
-    protected boolean searchTransitionStarted = false;
 
     public static boolean lastFoundOnLeft = true;
 
@@ -40,8 +39,6 @@ public class FindLineState extends RobotState {
         this.stopInit = false;
 
         IRobot robot = context.getRobot();
-
-        // Set speed
         robot.setSpeed(RobotConfig.getSearchMotorSpeedInPercent());
 
         // Check if transition can be done
@@ -56,8 +53,8 @@ public class FindLineState extends RobotState {
      * Gets called when the colored line has been found again
      */
     public synchronized void transition(RobotStateContext context) {
-        if (this.foundtransitionStarted) return;
-        this.foundtransitionStarted = true;
+        if (super.transitionStarted) return;
+        super.transitionStarted = true;
 
         // New state
         context.setState(new StopMovementAndFollowLine(this.colorType, this.turnLeft));
@@ -80,8 +77,19 @@ public class FindLineState extends RobotState {
         }
     }
 
+    @Override
+    public void handleCommand(RobotStateContext context, UserCommandContainer command) {
+        super.handleCommand(context, command);
+
+        switch (command.userCommand) {
+            case STOP_LINE: {
+
+                break;
+            }
+        }
+    }
+
     public void colorFound(RobotStateContext context) {
         this.transition(context);
     }
-
 }
