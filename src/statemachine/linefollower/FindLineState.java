@@ -5,7 +5,6 @@ import robot.IRobot;
 import robot.RobotMessage;
 import shared.ColorType;
 import shared.UserCommandContainer;
-import statemachine.RobotState;
 import statemachine.RobotStateContext;
 
 public class FindLineState extends LineFollowerState {
@@ -23,18 +22,10 @@ public class FindLineState extends LineFollowerState {
     }
 
     @Override
-    public String getName() {
-        return "Find line";
-    }
-
-    @Override
-    public String getDebugInfo() {
-        return String.format("turnLeft %s, colorType %s", this.turnLeft, this.colorType);
-    }
-
-    @Override
     public void initState(RobotStateContext context) {
         super.initState(context);
+
+        super.log(String.format("turnLeft %s, colorType %s", this.turnLeft, this.colorType));
 
         this.stopInit = false;
 

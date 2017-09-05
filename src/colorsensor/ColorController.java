@@ -3,8 +3,9 @@ package colorsensor;
 import shared.ColorType;
 import shared.ISensorController;
 import util.ConsoleHelper;
+import util.CustomLogger;
 
-public class ColorController implements IColorObservable, ISensorController {
+public class ColorController extends CustomLogger implements IColorObservable, ISensorController {
 
     private ColorRunner colorRunner;
     private Thread tColor = null;
@@ -35,7 +36,7 @@ public class ColorController implements IColorObservable, ISensorController {
             this.tColor = new Thread(this.colorRunner);
             this.tColor.start();
         } else {
-            ConsoleHelper.printlnRed("ColorController -> startListening -> ColorRunner is still running.");
+            super.log("startListening -> ColorRunner is still running.");
         }
     }
     @Override

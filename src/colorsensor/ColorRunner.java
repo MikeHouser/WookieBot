@@ -1,20 +1,25 @@
 package colorsensor;
 
-import config.RobotConfig;
 import shared.ColorType;
 import shared.CustomColor;
 import util.ConsoleHelper;
+import util.CustomLogger;
+import util.LoggingLevel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ColorRunner implements Runnable, IColorObservable {
+public class ColorRunner extends CustomLogger implements Runnable, IColorObservable {
     // Private fields
     private volatile boolean stopRequested;
     private volatile boolean isRunning = false;
 
     private ColorType currentColorType = ColorType.NONE;
-    public ColorType getCurrentColorType() { return this.currentColorType; }
+
+    public ColorType getCurrentColorType() {
+        return this.currentColorType;
+    }
 
     private CustomColor currentCustomColor = new CustomColor(0, 0, 0, 0);
 
@@ -40,16 +45,13 @@ public class ColorRunner implements Runnable, IColorObservable {
     }
 
     public void requestStop() {
-        if (CONSOLE_OUTPUT) {
-            ConsoleHelper.printlnDefault("ColorRunner: Shutdown has been called.");
-        }
+        super.log("Shutdown has been called.");
+
         this.stopRequested = true;
     }
 
     public void readData() {
-        if (CONSOLE_OUTPUT) {
-            ConsoleHelper.printlnDefault("ColorRunner: Started listening on color data");
-        }
+        super.log("Started listening on color data");
 
         while (!this.stopRequested) {
             this.isRunning = true;
@@ -60,9 +62,7 @@ public class ColorRunner implements Runnable, IColorObservable {
         this.isRunning = false;
         this.stopRequested = false;
 
-        if (CONSOLE_OUTPUT) {
-            ConsoleHelper.printlnDefault("ColorRunner: Shutdown complete");
-        }
+        super.log("Shutdown complete");
 
         this.finishUnsubscribeToColorChangeCalled = true;
     }
@@ -70,24 +70,25 @@ public class ColorRunner implements Runnable, IColorObservable {
     private void setColor(ColorType newColorType) {
         if (this.currentColorType != newColorType) {
             this.currentColorType = newColorType;
-            if (CONSOLE_OUTPUT) {
-                ConsoleHelper.printlnRed("New color detected: " + newColorType.name());
-            }
+            super.log(String.format(
+                    "{s} >> New color detected: {s}",
+                    this.getClass().getName(),
+                    newColorType.name()));
+        }
 
-            try {
-                for (IColorObserver colorObserver : this.colorObservers) {
-                    colorObserver.colorChanged(newColorType);
-                }
-            } catch (java.util.ConcurrentModificationException concurrentModificationException2) {
-                System.out.println(concurrentModificationException2);
+        try {
+            for (IColorObserver colorObserver : this.colorObservers) {
+                colorObserver.colorChanged(newColorType);
             }
+        } catch (java.util.ConcurrentModificationException concurrentModificationException2) {
+            super.log(concurrentModificationException2.toString(), LoggingLevel.Error);
+        }
 
-            if (this.finishUnsubscribeToColorChangeCalled) {
-                this.colorObservers.removeAll(this.colorObserversToRemove);
-                this.colorObserversToRemove.clear();
+        if (this.finishUnsubscribeToColorChangeCalled) {
+            this.colorObservers.removeAll(this.colorObserversToRemove);
+            this.colorObserversToRemove.clear();
 
-                this.finishUnsubscribeToColorChangeCalled = false;
-            }
+            this.finishUnsubscribeToColorChangeCalled = false;
         }
     }
 

@@ -6,21 +6,14 @@ import robot.RobotMessage;
 import shared.ColorType;
 import statemachine.RobotState;
 import statemachine.RobotStateContext;
-import util.ConsoleHelper;
 
 import java.text.MessageFormat;
 
 public class FollowLineState extends LineFollowerState {
     private ColorType colorType;
-    private final boolean CONSOLE_OUTPUT = true;
 
     public FollowLineState(ColorType colorType) {
         this.colorType = colorType;
-    }
-
-    @Override
-    public String getName() {
-        return "Follow line";
     }
 
     @Override
@@ -33,13 +26,28 @@ public class FollowLineState extends LineFollowerState {
     private void performAction(RobotStateContext context) {
         IRobot robot = context.getRobot();
 
-        if (robot.getColor() != this.colorType) {
-            this.transition(context);
+        if(!this.checkColor(context, robot.getColor())) {
             return;
         }
 
         robot.setSpeed(RobotConfig.getDefaultMotorSpeedInPercent());
         robot.startDriveForward();
+    }
+
+    private boolean checkColor(RobotStateContext context, ColorType newColor) {
+        super.log(MessageFormat.format(
+                "Color to check: {0}" , newColor.name()));
+
+        if (newColor != this.colorType) {
+            super.log(MessageFormat.format(
+                    "Lost the color to follow [{0}] and found [{1}] instead.",
+                    this.colorType, newColor));
+
+            this.transition(context);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -49,15 +57,7 @@ public class FollowLineState extends LineFollowerState {
         switch (message) {
             case ColorChanged: {
                 ColorType newColor = ColorType.valueOf(data);
-                if (newColor != this.colorType) {
-                    if (CONSOLE_OUTPUT) {
-                        ConsoleHelper.printlnPurple(MessageFormat.format(
-                                "Lost the color to follow {0} and found {1} instead.",
-                                this.colorType, newColor));
-                    }
-
-                    this.transition(context);
-                }
+                this.checkColor(context, newColor);
             }
         }
     }

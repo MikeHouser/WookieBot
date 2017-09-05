@@ -1,7 +1,5 @@
 package util;
 
-import config.RobotConfig;
-
 public class ConsoleHelper {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -12,6 +10,7 @@ public class ConsoleHelper {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
+
 
     public static void printlnRed(String message) {
         println(message, ANSI_RED);
@@ -25,15 +24,14 @@ public class ConsoleHelper {
         println(message, ANSI_PURPLE);
     }
 
+    public static void printlnBlue(String message) {
+        println(message, ANSI_BLUE);
+    }
     public static void printlnDefault(String message) {
-        if (RobotConfig.getWriteToConsole()) {
-            System.out.println(message);
-        }
+        System.out.println(message);
     }
 
     private static void println(String message, String color) {
-        if (RobotConfig.getWriteToConsole()) {
-            System.out.println(color + message + ANSI_RESET);
-        }
+        System.out.println(color + message + ANSI_RESET);
     }
 }

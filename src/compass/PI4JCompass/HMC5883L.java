@@ -127,13 +127,13 @@ public class HMC5883L implements MultiAxisGyro {
 
     @Override
     public void enable() throws IOException {
-//        byte[] init = new byte[3];
+//        byte[] startMotorController = new byte[3];
 //
-//        init[0] = (byte)((samplesAverage << 5) + (outputRate << 2) + measurementMode);
-//        init[1] = (byte)((gain << 5));
-//        init[2] = (byte)(mode);
+//        startMotorController[0] = (byte)((samplesAverage << 5) + (outputRate << 2) + measurementMode);
+//        startMotorController[1] = (byte)((gain << 5));
+//        startMotorController[2] = (byte)(mode);
 //
-//        device.write(0, init, 0, 3);
+//        device.write(0, startMotorController, 0, 3);
         device.write(2, (byte)0);
     }
 

@@ -5,15 +5,7 @@ import statemachine.RobotState;
 import statemachine.RobotStateContext;
 import util.ConsoleHelper;
 
-/**
- * Created by Mike on 27.07.16.
- */
 public class OfflineState extends RobotState {
-
-    @Override
-    public String getName() {
-        return "Offline";
-    }
 
     @Override
     public void handleRobotMessage(RobotStateContext context, RobotMessage message, String data) {

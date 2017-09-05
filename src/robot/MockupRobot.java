@@ -13,9 +13,11 @@ import motor.MotorType;
 
 public class MockupRobot extends RobotBase {
 
+    private MockupCompassProxy mockupCompassProxy = new MockupCompassProxy();
+
     @Override
     public void initRobot() {
-	    super.compassController = new CompassController(new MockupCompassProxy());
+	    super.compassController = new CompassController(mockupCompassProxy);
 
 	    super.motorController = new MotorController(
 	            new MockupMotor(0, 100, MotorType.LEFT),
@@ -35,5 +37,24 @@ public class MockupRobot extends RobotBase {
     @Override
     public void printMessage(String message) {
         super.printMessage("MockupRobot: ", message);
+    }
+
+    @Override
+    public void startTurnLeft() {
+        super.startTurnLeft();
+        this.mockupCompassProxy.angleChangeValue = -1;
+    }
+
+    @Override
+    public void startTurnRight() {
+        super.startTurnRight();
+        this.mockupCompassProxy.angleChangeValue = 1;
+    }
+
+    @Override
+    public void stopTurnLeft() {
+        this.mockupCompassProxy.angleChangeValue = 0;
+        super.stopTurnLeft();
+
     }
 }

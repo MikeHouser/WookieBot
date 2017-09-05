@@ -4,6 +4,7 @@ import robot.IRobot;
 import shared.ColorType;
 import statemachine.RobotStateContext;
 import util.ConsoleHelper;
+import util.CustomLogger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,6 +19,7 @@ public class FindLineStateTimeBased extends FindLineState {
         private ColorType colorType;
         private int timeoutMs;
         private boolean turnLeft;
+        private CustomLogger customLogger = new CustomLogger();
 
         public boolean Cancel = false;
         public boolean Activated = false;
@@ -35,7 +37,7 @@ public class FindLineStateTimeBased extends FindLineState {
             if (this.Cancel) return;
             this.Activated = true;
 
-            ConsoleHelper.printlnPurple("Timout reached in 'FindLineStateTimeBased'.");
+            this.customLogger.log("Timout reached in 'FindLineStateTimeBased'.");
 
             this.timeoutMs += this.timeoutMs;
 

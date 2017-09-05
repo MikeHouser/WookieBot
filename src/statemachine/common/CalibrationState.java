@@ -5,15 +5,7 @@ import statemachine.RobotState;
 import statemachine.RobotStateContext;
 import util.ConsoleHelper;
 
-/**
- * Created by Mike on 29.07.16.
- */
 public class CalibrationState extends RobotState {
-
-    @Override
-    public String getName() {
-        return "Calibration";
-    }
 
     @Override
     public void initState(RobotStateContext context) {

@@ -6,7 +6,6 @@ import robot.RobotMessage;
 import shared.ColorType;
 import statemachine.RobotState;
 import statemachine.RobotStateContext;
-import util.ConsoleHelper;
 
 public class FindLineStateStepperBased extends FindLineState {
 
@@ -28,18 +27,10 @@ public class FindLineStateStepperBased extends FindLineState {
     }
 
     @Override
-    public String getName() {
-        return "FindLineStateStepperBased";
-    }
-
-    @Override
-    public String getDebugInfo() {
-        return super.getDebugInfo() + String.format(", steps %d", this.steps);
-    }
-
-    @Override
     public void initState(RobotStateContext context) {
         super.initState(context);
+
+        super.log(String.format(", steps %d", this.steps));
 
         if (super.stopInit) return;
 

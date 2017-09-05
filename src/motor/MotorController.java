@@ -1,15 +1,35 @@
 package motor;
 
-import util.ConsoleHelper;
+import motor.statemachine.states.MotorControllerState;
+import motor.statemachine.states.MotorControllerStateOffline;
+import util.CustomLogger;
+import util.LoggingLevel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MotorController implements IMotorController, IMotorObserver, IMotorControllerObservable {
-    private IMotor leftMotor;
-    private IMotor rightMotor;
-    private boolean waitForStop = false;
-    private final boolean CONSOLE_OUTPUT = false;
+public class MotorController extends CustomLogger implements IMotorController, IMotorObserver, IMotorControllerObservable {
+
+    private Axis axis = new Axis();
+
+    public Axis getAxis() {
+        return this.axis;
+    }
+
+    //region STATEMACHINE
+
+    private MotorControllerState motorControllerState = new MotorControllerStateOffline();
+
+    public void setMotorControllerState(MotorControllerState motorControllerState) {
+        this.motorControllerState.deInitState(this);
+
+        this.motorControllerState = motorControllerState;
+        super.log(String.format("New state: %s", motorControllerState.getClass().getName()));
+
+        this.motorControllerState.initState(this);
+    }
+
+    //endregion
 
     //region Observer Pattern
     private boolean finishUnsubscribeCalled = false;
@@ -18,115 +38,94 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
     //endregion
 
     public MotorController(IMotor leftMotor, IMotor rightMotor) {
-        this.leftMotor = leftMotor;
-        this.rightMotor = rightMotor;
+        this.axis.setLeftMotor(leftMotor);
+        this.axis.setRightMotor(rightMotor);
     }
 
     @Override
     public boolean getIsMoving() {
-        return this.leftMotor.isRotating() || this.rightMotor.isRotating();
+        return this.axis.getIsMoving();
     }
 
-    @Override
-    public void stop() {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: stop");
-        this.leftMotor.stop();
-        this.rightMotor.stop();
-    }
-
-    @Override
-    public void startTurnLeft() {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: startTurnLeft");
-        this.leftMotor.backward();
-        this.rightMotor.forward();
-    }
-
-    @Override
-    public void startTurnRight() {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: startTurnRight");
-        this.leftMotor.forward();
-        this.rightMotor.backward();
-    }
+    //region Driving Operations
 
     @Override
     public void startDriveForward() {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: startDriveForward");
-        this.leftMotor.forward();
-        this.rightMotor.forward();
+        super.log("startDriveForward");
+        this.motorControllerState.startDriveForward(this);
     }
 
     @Override
     public void startDriveBackward() {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: startDriveBackward");
-        this.leftMotor.backward();
-        this.rightMotor.backward();
+        super.log("startDriveBackward");
+        this.motorControllerState.startDriveBackward(this);
     }
 
     @Override
+    public void stop() {
+        super.log("stop");
+        this.motorControllerState.stop(this);
+    }
+
+    @Override
+    public void startTurnLeft() {
+        super.log("startTurnLeft");
+        this.motorControllerState.startTurnLeft(this);
+    }
+
+    @Override
+    public void startTurnRight() {
+        super.log("startTurnRight");
+        this.motorControllerState.startTurnRight(this);
+    }
+
+    //endregion
+
+    @Override
     public void setSpeed(int speed) {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: setSpeed");
-        this.leftMotor.setSpeed(speed);
-        this.rightMotor.setSpeed(speed);
+        super.log("MotorController: setSpeed");
+        this.motorControllerState.setSpeed(this, speed);
     }
 
     @Override
     public void init() {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: init");
+        super.log("init");
 
-        ((IMotorObservable)this.leftMotor).subscribeToMotorMessages(this);
-        ((IMotorObservable)this.rightMotor).subscribeToMotorMessages(this);
+        this.motorControllerState.startMotorController(this);
+
+        this.axis.init();
+
+        ((IMotorObservable)this.axis.getLeftMotor()).subscribeToMotorMessages(this);
+        ((IMotorObservable)this.axis.getRightMotor()).subscribeToMotorMessages(this);
     }
 
     @Override
     public void deInit() {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault("MotorController: deInit");
+        super.log("deInit");
 
-        this.leftMotor.deInit();
-        this.rightMotor.deInit();
+        this.motorControllerState.shutdownMotorController(this);
 
-        ((IMotorObservable)this.leftMotor).unsubscribeToMotorMessages(this);
-        ((IMotorObservable)this.rightMotor).unsubscribeToMotorMessages(this);
+        this.axis.deInit();
 
-        ((IMotorObservable)this.leftMotor).finishUnsubscribeToMotorMessages();
-        ((IMotorObservable)this.rightMotor).finishUnsubscribeToMotorMessages();
+        ((IMotorObservable)this.axis.getLeftMotor()).unsubscribeToMotorMessages(this);
+        ((IMotorObservable)this.axis.getRightMotor()).unsubscribeToMotorMessages(this);
+
+        ((IMotorObservable)this.axis.getLeftMotor()).finishUnsubscribeToMotorMessages();
+        ((IMotorObservable)this.axis.getRightMotor()).finishUnsubscribeToMotorMessages();
     }
 
     //region Stepper Functionality
 
     @Override
     public void turnLeftWithSteps(int steps) {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault(String.format("MotorController: turnLeftWithSteps(%d)", steps));
-
-        if(this.leftMotor instanceof IStepperMotor && this.rightMotor instanceof IStepperMotor) {
-            ((IStepperMotor) this.leftMotor).backward(steps);
-            ((IStepperMotor) this.rightMotor).forward(steps);
-        } else {
-            if (CONSOLE_OUTPUT)
-                ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
-        }
+        super.log(String.format("turnLeftWithSteps(%d)", steps));
+        this.motorControllerState.turnLeftWithSteps(this, steps);
     }
 
     @Override
     public void turnRightWithSteps(int steps) {
-        if (CONSOLE_OUTPUT)
-            ConsoleHelper.printlnDefault(String.format("MotorController: turnRightWithSteps(%d)", steps));
-
-        if(this.leftMotor instanceof IStepperMotor && this.rightMotor instanceof IStepperMotor) {
-            ((IStepperMotor) this.leftMotor).forward(steps);
-            ((IStepperMotor) this.rightMotor).backward(steps);
-        } else {
-            if (CONSOLE_OUTPUT)
-                ConsoleHelper.printlnYellow("Warning: At least one motor is not an instance of IStepperMotor.");
-        }
+        super.log(String.format("MotorController: turnRightWithSteps(%d)", steps));
+        this.motorControllerState.turnRightWithSteps(this, steps);
     }
 
     //endregion
@@ -135,7 +134,7 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
 
     @Override
     public void handleMotorMessage(MotorMessage message, MotorType motorType) {
-        if(this.leftMotor.isRotating() || this.rightMotor.isRotating()) {
+        if(this.axis.getIsMoving()) {
             // at least one motor is rotating
             this.notifyMotorControllerObservers(MotorControllerMessage.MovementStarted);
         } else {
@@ -163,7 +162,7 @@ public class MotorController implements IMotorController, IMotorObserver, IMotor
         try {
             for (IMotorControllerObserver observer : this.observers) observer.handleMotorControllerMessage(message);
         } catch (java.util.ConcurrentModificationException concurrentModificationException) {
-            System.out.println(concurrentModificationException);
+            super.log(concurrentModificationException.toString(), LoggingLevel.Error);
         }
 
         if(this.finishUnsubscribeCalled) {

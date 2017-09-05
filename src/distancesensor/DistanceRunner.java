@@ -2,11 +2,12 @@ package distancesensor;
 
 import config.RobotConfig;
 import util.ConsoleHelper;
+import util.CustomLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DistanceRunner implements Runnable, IDistanceObservable {
+public class DistanceRunner extends CustomLogger implements Runnable, IDistanceObservable {
     private IDistanceSensor sensor;
     private volatile boolean stopRequested;
     private volatile boolean isRunning = false;
@@ -27,7 +28,7 @@ public class DistanceRunner implements Runnable, IDistanceObservable {
 
     @Override
     public void run() {
-        ConsoleHelper.printlnDefault("DistanceRunner: Started listening on distance data");
+        super.log("Started listening on distance data");
         try {
             while(!this.stopRequested) {
                 this.isRunning = true;
@@ -45,7 +46,7 @@ public class DistanceRunner implements Runnable, IDistanceObservable {
         catch (InterruptedException e) {
             e.printStackTrace();
         }
-        ConsoleHelper.printlnDefault("DistanceRunner: Shutdown complete");
+        super.log("DistanceRunner: Shutdown complete");
 
         this.finishUnsubscribeCalled = true;
     }
@@ -72,9 +73,9 @@ public class DistanceRunner implements Runnable, IDistanceObservable {
     }
 
     public void requestStop() {
-        ConsoleHelper.printlnDefault("DistanceRunner: Shutdown has been called.");
+        super.log("Shutdown has been called.");
         if(!this.isRunning) {
-            ConsoleHelper.printlnDefault("DistanceRunner: Currently not running - No need for shutdown.");
+            super.log("Currently not running - No need for shutdown.");
         }
         this.stopRequested = true;
     }

@@ -22,15 +22,10 @@ public class TurnRightState extends RobotState {
     }
 
     @Override
-    public String getName() {
-        return "Turn right";
-    }
-
-    @Override
     public void initState(RobotStateContext context) {
         this.startAngle = context.getRobot().getRoundedAngle();
         if (this.startAngle + this.offset > 360) {
-            ConsoleHelper.printlnDefault("BeyondZero = true");
+            super.log("BeyondZero = true");
             this.beyondZero = true;
         }
 
@@ -53,7 +48,7 @@ public class TurnRightState extends RobotState {
 
                 if (roundedAngle < tempLastAngle &&
                         !(lastAngle <= 360 && ((roundedAngle < this.startAngle) && (roundedAngle >= 0)))) { // handle north pole
-                    ConsoleHelper.printlnYellow("Terminated left movement. New Angle: " + roundedAngle + " / Last Angle: " + tempLastAngle);
+                    super.log("Terminated left movement. New Angle: " + roundedAngle + " / Last Angle: " + tempLastAngle);
                     return; // Terminate left rotations
                 }
 
@@ -62,7 +57,7 @@ public class TurnRightState extends RobotState {
                         // stop execution until the north point has been reached
                         return;
                     } else {
-                        ConsoleHelper.printlnDefault("BeyondZero = false");
+                        super.log("BeyondZero = false");
                         this.beyondZero = false;
                     }
                 }

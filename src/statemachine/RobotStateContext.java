@@ -1,15 +1,16 @@
 package statemachine;
 
 import robot.*;
-import shared.ColorType;
 import shared.UserCommandContainer;
 import statemachine.common.OfflineState;
-import util.ConsoleHelper;
+import util.CustomLogger;
+import util.interfaces.ICustomLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RobotStateContext implements IRobotObserver, IStatemachineObservable {
+public class RobotStateContext extends CustomLogger
+        implements IRobotObserver, IStatemachineObservable, ICustomLogger {
 
     private RobotState currentState;
     private boolean stopCalled = false;
@@ -40,18 +41,18 @@ public class RobotStateContext implements IRobotObserver, IStatemachineObservabl
         if (this.stopCalled && !(newState instanceof OfflineState)) return;
 
         StatemachineEventArgs eventArgsPreChange = new StatemachineEventArgs();
-        eventArgsPreChange.stateName = newState.getName();
+        eventArgsPreChange.stateName = newState.getDisplayName();
         eventArgsPreChange.stateNameWillChange = true;
         this.notifyObservers(eventArgsPreChange);
 
         this.currentState = newState;
+        super.log(String.format("New current state: %s", newState.getDisplayName()));
 
         StatemachineEventArgs eventArgs = new StatemachineEventArgs();
-        eventArgs.stateName = newState.getName();
+        eventArgs.stateName = newState.getDisplayName();
         eventArgs.stateNameChanged = true;
         this.notifyObservers(eventArgs);
 
-        this.currentState.writeMessage();
         this.currentState.initState(this);
     }
 

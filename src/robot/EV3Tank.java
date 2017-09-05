@@ -27,7 +27,7 @@ public class EV3Tank extends RobotBase {
 
 	@Override
 	public void initRobot() {
-		System.out.println("Started init of RobotCommander.");
+		System.out.println("Started startMotorController of RobotCommander.");
 
 		try {
 			this.ev3 = new RemoteEV3(RobotConfig.getIpAddressEv3());
@@ -58,7 +58,7 @@ public class EV3Tank extends RobotBase {
 		super.initRobot();
 		super.initRobotComplete();
 
-		System.out.println("Finished init of RobotCommander.");
+		System.out.println("Finished startMotorController of RobotCommander.");
 	}
 
 	@Override

@@ -2,8 +2,9 @@ package compass;
 
 import shared.ISensorController;
 import util.ConsoleHelper;
+import util.CustomLogger;
 
-public class CompassController implements ICompassController, ISensorController, IAngleObservable {
+public class CompassController extends CustomLogger implements ICompassController, ISensorController, IAngleObservable {
 
 	private ICompassProxy compassProxy;
 	
@@ -39,7 +40,7 @@ public class CompassController implements ICompassController, ISensorController,
 			this.tAngle = new Thread(this.angleRunner);
 			this.tAngle.start();
 		} else {
-			ConsoleHelper.printlnRed("CompassController -> startListening -> AngleRunner is still running.");
+			super.log("startListening -> AngleRunner is still running.");
 		}
 	}
 
@@ -54,7 +55,7 @@ public class CompassController implements ICompassController, ISensorController,
 			this.tCalibration = new Thread(this.calibrationRunner);
 			this.tCalibration.start();
 		}  else {
-			ConsoleHelper.printlnRed("CompassController -> startCalibrating -> CalibrationRunner is still running.");
+			super.log("startCalibrating -> CalibrationRunner is still running.");
 		}
 	}
 
@@ -64,13 +65,13 @@ public class CompassController implements ICompassController, ISensorController,
 
 		this.calibrationRunner.requestStop();
 
-		System.out.println("Wait for 'CalibrationRunner' shutdown to complete");
+		super.log("Wait for 'CalibrationRunner' shutdown to complete");
 
 		try {
 			this.tCalibration.join();
 		} catch (InterruptedException e) { }
 
-        System.out.println("Shutdown for 'CalibrationRunner' has completed.");
+        super.log("Shutdown for 'CalibrationRunner' has completed.");
 
 		this.offsetX = this.angleRunner.offsetX = this.calibrationRunner.offsetX;
 		this.offsetY = this.angleRunner.offsetY = this.calibrationRunner.offsetY;

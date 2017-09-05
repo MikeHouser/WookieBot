@@ -18,11 +18,6 @@ public class StopMovementAndFollowLine extends LineFollowerState {
     }
 
     @Override
-    public String getName() {
-        return "StopMovementAndFollowLine";
-    }
-
-    @Override
     public void initState(RobotStateContext context) {
         super.initState(context);
 

@@ -7,12 +7,13 @@ import shared.CalculationHelper;
 import shared.CustomColor;
 import shared.ThreadHelper;
 import util.ConsoleHelper;
+import util.CustomLogger;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TCS34725
+public class TCS34725 extends CustomLogger
 {
     public final static int LITTLE_ENDIAN = 0;
     public final static int BIG_ENDIAN    = 1;
@@ -226,6 +227,7 @@ public class TCS34725
             Thread.sleep(INTEGRATION_TIME_DELAY.get(this.integrationTime) / 1000L);
         } catch (InterruptedException ie) {
             // return last color if there was a problem with the delay
+            super.log("Color could not be read.");
             return new CustomColor(this.r, this.b, this.g, this.c);
         }
 
@@ -249,7 +251,7 @@ public class TCS34725
      */
     public void setInterrupt(boolean intrpt) throws Exception
     {
-        ConsoleHelper.printlnDefault("TCS34725Sensor -> setInterrupt");
+        super.log("setInterrupt");
 
         int r = this.readU8(TCS34725_ENABLE);
         if (intrpt)

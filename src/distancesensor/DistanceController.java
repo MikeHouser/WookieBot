@@ -2,8 +2,9 @@ package distancesensor;
 
 import shared.ISensorController;
 import util.ConsoleHelper;
+import util.CustomLogger;
 
-public class DistanceController implements IDistanceObservable, ISensorController {
+public class DistanceController extends CustomLogger implements IDistanceObservable, ISensorController {
     private IDistanceSensor sensor;
 
     private int minimumDistance = 5;
@@ -36,7 +37,7 @@ public class DistanceController implements IDistanceObservable, ISensorControlle
             this.thread = new Thread(this.distanceRunner);
             this.thread.start();
         } else {
-            ConsoleHelper.printlnRed("DistanceController -> startListening -> Distancerunner is still running.");
+            super.log("startListening -> Distancerunner is still running.");
         }
     }
 

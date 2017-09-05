@@ -15,11 +15,6 @@ public class StopMovementAndFindLineTimeBased extends StopMovementAndFindLine {
     }
 
     @Override
-    public String getName() {
-        return "StopMovementAndFindLineTimeBased";
-    }
-
-    @Override
     public synchronized void transition(RobotStateContext context) {
         if (super.transitionStarted) return;
         super.transitionStarted = true;

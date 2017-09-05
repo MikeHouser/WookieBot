@@ -17,11 +17,6 @@ public class StopMovementAndFindLine extends LineFollowerState {
     }
 
     @Override
-    public String getName() {
-        return "StopMovementAndFindLine";
-    }
-
-    @Override
     public void initState(RobotStateContext context) {
         super.initState(context);
 

@@ -7,6 +7,7 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import config.RobotConfig;
 import util.ConsoleHelper;
+import util.LoggingLevel;
 
 import static com.pi4j.io.gpio.PinState.LOW;
 import static com.pi4j.io.gpio.PinState.HIGH;
@@ -125,9 +126,7 @@ public class StepperMotor28BYJ48 extends StepperMotorBase {
         try {
             Thread.sleep(super.currentSpeed);
         } catch (InterruptedException e) {
-            if (CONSOLE_OUTPUT) {
-                ConsoleHelper.printlnDefault("StepperMotor28BYJ48: writeSequence -> Interrupted");
-            }
+            super.log("writeSequence -> Interrupted");
             throw e;
         }
     }

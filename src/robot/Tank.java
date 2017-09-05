@@ -16,15 +16,15 @@ public class Tank extends RobotBase {
     public void initRobot() {
         super.compassController = new CompassController(new CompassProxyPI4J());
 
-        IMotor leftMotor = new
+        IMotor rightMotor = new
                 StepperMotor28BYJ48(RaspiPin.GPIO_25, RaspiPin.GPIO_24,
                 RaspiPin.GPIO_23, RaspiPin.GPIO_22,
-                SteppingMethod.FULL_STEP, MotorType.LEFT, true);
+                SteppingMethod.FULL_STEP, MotorType.RIGHT, false);
 
-        IMotor rightMotor = new
+        IMotor leftMotor = new
                 StepperMotor28BYJ48(RaspiPin.GPIO_29, RaspiPin.GPIO_28,
                 RaspiPin.GPIO_27, RaspiPin.GPIO_26,
-                SteppingMethod.FULL_STEP, MotorType.RIGHT, false);
+                SteppingMethod.FULL_STEP, MotorType.LEFT, true);
 
         super.motorController = new MotorController(leftMotor, rightMotor);
 

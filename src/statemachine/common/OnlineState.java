@@ -11,11 +11,6 @@ import statemachine.linefollower.SetLineColorState;
 public class OnlineState extends RobotState {
 
     @Override
-    public String getName() {
-        return "Online";
-    }
-
-    @Override
     public void initState(RobotStateContext context) {
         super.initState(context);
 
@@ -56,7 +51,7 @@ public class OnlineState extends RobotState {
         int startAngle = robot.getRoundedAngle();
         int targetAngle = CalculationHelper.addDegrees(robot.getRoundedAngle(), offset);
 
-        System.out.println("StartAngle " + startAngle + " / TargetAngle " + targetAngle);
+        super.log(String.format("StartAngle %d / TargetAngle  %d", startAngle, targetAngle));
 
         if (left) {
             context.setState(new TurnLeftState(targetAngle, offset));

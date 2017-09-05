@@ -4,29 +4,11 @@ import robot.RobotMessage;
 import shared.UserCommandContainer;
 import statemachine.common.OfflineState;
 import statemachine.common.OnlineState;
-import util.ConsoleHelper;
+import util.CustomLogger;
 
-import javax.swing.*;
-
-public class RobotState {
+public class RobotState extends CustomLogger {
 
     protected volatile boolean transitionStarted = false;
-
-    public String getName() {
-        return "RobotState";
-    }
-
-    public String getDebugInfo() { return ""; }
-
-    public void writeMessage() {
-        String debugInfo = this.getDebugInfo();
-        String message = String.format("State: %s", this.getName());
-        if (debugInfo.length() > 0) {
-            message += String.format(" / Debug Info: %s", debugInfo);
-        }
-
-        ConsoleHelper.printlnDefault(message);
-    }
 
     public void initState(RobotStateContext context) {
 

@@ -1,11 +1,12 @@
 package motor;
 
 import util.ConsoleHelper;
+import util.CustomLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MotorBase implements IMotor, IMotorObservable {
+public class MotorBase extends CustomLogger implements IMotor, IMotorObservable {
     protected int minSpeedAbs = 0;
     protected int maxSpeedAbs = 100;
 
@@ -51,9 +52,7 @@ public class MotorBase implements IMotor, IMotorObservable {
             float temp = Math.abs((onePercent * speedInPercent) + offset);
             this.currentSpeed = Math.round(temp);
         }
-        if (CONSOLE_OUTPUT) {
-            ConsoleHelper.printlnDefault("Motor (" + this.motorType.name() + "): Speed is set to " + this.currentSpeed);
-        }
+        super.log("Motor (" + this.motorType.name() + "): Speed is set to " + this.currentSpeed);
     }
 
     @Override

@@ -1,13 +1,12 @@
 package compass;
 
 import config.RobotConfig;
-import util.ConsoleHelper;
+import util.CustomLogger;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class AngleRunner implements Runnable, IAngleObservable {
+public class AngleRunner extends CustomLogger implements Runnable, IAngleObservable {
 	// Private fields
 	private ICompassProxy compassProxy;
     private volatile boolean stopRequested;
@@ -35,15 +34,15 @@ public class AngleRunner implements Runnable, IAngleObservable {
 	}
 
     public void requestStop() {
-        System.out.println("Anglerunner: Shutdown has been called.");
+        super.log("Shutdown has been called.");
 		if(!this.isRunning) {
-			System.out.println("Anglerunner: Currently not running - No need for shutdown.");
+			super.log("Currently not running - No need for shutdown.");
 		}
         this.stopRequested = true;
     }
 
 	public void readData() {
-        System.out.println("Anglerunner: Started listening on compassController data");
+        super.log("Started listening on compassController data");
 		try {
 	    	while(!this.stopRequested) {
 				this.isRunning = true;
@@ -62,7 +61,7 @@ public class AngleRunner implements Runnable, IAngleObservable {
 	    catch (InterruptedException e) {
 	        e.printStackTrace();
 	    }
-	    System.out.println("Anglerunner: Shutdown complete");
+	    super.log("Shutdown complete");
 
         this.finishUnsubscribeToAngleChangeCalled = true;
 	}
