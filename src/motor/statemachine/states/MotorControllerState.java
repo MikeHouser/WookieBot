@@ -1,8 +1,9 @@
 package motor.statemachine.states;
 
 import motor.MotorController;
+import util.CustomLogger;
 
-public class MotorControllerState {
+public class MotorControllerState extends CustomLogger {
     public void startMotorController(MotorController mCtrlCtx) {
 
     }

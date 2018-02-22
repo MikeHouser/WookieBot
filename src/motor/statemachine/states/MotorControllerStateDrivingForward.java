@@ -26,4 +26,9 @@ public class MotorControllerStateDrivingForward extends MotorControllerStateOnli
 
         mCtrlCtx.setMotorControllerState(new MotorControllerStateStopped());
     }
+
+    @Override
+    public void startDriveForward(MotorController mCtrlCtx) {
+        super.startDriveForward(mCtrlCtx);
+    }
 }
